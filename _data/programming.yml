@@ -1,0 +1,27 @@
+- name: Python
+  percentage: 90
+  color: primary
+
+- name: Flask
+  percentage: 80
+  color: success
+
+- name: Ruby
+  percentage: 60
+  color: dark
+
+- name: Rails
+  percentage: 60
+  color: dark
+
+- name: Java
+  percentage: 60
+  color: dark
+
+- name: HTML5/CSS3/JS
+  percentage: 75
+  color: info
+
+- name: React
+  percentage: 40
+  color: danger

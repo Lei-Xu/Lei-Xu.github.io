@@ -1,0 +1,27 @@
+- name: Docker
+  percentage: 80
+  color: success
+
+- name: Spark
+  percentage: 70
+  color: info
+
+- name: AWS
+  percentage: 50
+  color: danger
+
+- name: GCP
+  percentage: 50
+  color: danger
+
+- name: Airflow
+  percentage: 50
+  color: danger
+
+- name: Git
+  percentage: 80
+  color: success
+
+- name: RESTful API
+  percentage: 90
+  color: primary

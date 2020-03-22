@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+
+<html lang="en" class="h-100">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content=""Everyday, I turn ideas :collision: into code with Espresso Macchiato :coffee: , and never broke production."">
+
+  <title>< portfoLEI /></title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <!-- Animate CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css" type="text/css"/>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+
+  <!-- Mathjax -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  </script>
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+</head>
+
+
+<body class="d-flex flex-column h-100">
+
+  <main class="flex-shrink-0 container mt-5">
+  <nav class="navbar navbar-expand-lg navbar-light">
+
+  <a class="navbar-brand" href="/"><h5><b>&lt; portfoLEI /&gt;</b></h5></a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav ml-auto">
+<a class="nav-item nav-link active" href="/projects/">Projects</a>
+
+      <a class="nav-item nav-link " href="/blog/">Blog</a>
+
+      <a class="nav-item nav-link " href="/about/">About</a>
+
+      
+
+    </div>
+  </div>
+
+</nav>
+  <div class="col-lg-10 mx-auto mt-5 post">
+  <h1 id="genetic-algorithm">Genetic Algorithm</h1>
+
+<h2 id="1-background">1. Background</h2>
+
+<p>There are four proposed projects, each of which runs for 3 years and their characteristics are also given below for reference.</p>
+
+<table class="tg">
+  <tr>
+    <th> Project </th>
+    <th> Return (million) </th>
+    <th colspan="3"> Capital Required (million) </th>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td> year 1 </td>
+    <td> year 2 </td>
+    <td> year 3 </td>
+  </tr>
+  <tr>
+    <td> 1 </td>
+    <td> 0.2 </td>
+    <td> 0.5 </td>
+    <td> 0.3 </td>
+    <td> 0.2 </td>
+  </tr>
+  <tr>
+    <td> 2 </td>
+    <td> 0.3 </td>
+    <td> 1.0 </td>
+    <td> 0.8 </td>
+    <td> 0.2 </td>
+  </tr>
+  <tr>
+    <td> 3 </td>
+    <td> 0.5 </td>
+    <td> 1.5 </td>
+    <td> 1.5 </td>
+    <td> 0.3 </td>
+  </tr>
+  <tr>
+    <td> 4 </td>
+    <td> 0.1 </td>
+    <td> 0.1 </td>
+    <td> 0.4 </td>
+    <td> 0.1 </td>
+  </tr>
+</table>
+
+<p>The available budget is 3.1 million for year 1, 2.5 million for year 2 and 0.4 million for year 3.</p>
+
+<p>The goal of the assignment is to develop a program to decide which projects to invest in order to maximize the total return using the <strong>Genetic Algorithm</strong>.</p>
+
+<h2 id="2-techniques">2. Techniques</h2>
+
+<h3 id="21-what-is-genetic-alogithm">2.1 What is Genetic Alogithm?</h3>
+
+<p>A <strong>genetic algorithm</strong> is a search heuristic that is inspired by Charles Darwin’s theory of natural evolution. This algorithm reflects the process of natural selection where the fittest individuals are selected for reproduction in order to produce offsprings of the next generation.</p>
+
+<h3 id="22-steps-involved-in-genetic-algorithm">2.2 Steps Involved in Genetic Algorithm</h3>
+
+<p>The process of natural selection starts with the selection of fittest individuals from a population. They produce offspring which inherit the characteristics of the parents and will be added to the next generation. If parents have better fitness, their offspring will be better than parents and have a better chance at surviving. This process keeps on iterating and at the end, a generation with the fittest individuals will be found.</p>
+
+<p>There are six phases considered in a genetic algorithm:</p>
+
+<ol>
+  <li><strong>Initialize Population</strong></li>
+  <li><strong>Fitness Function</strong></li>
+  <li><strong>Selection</strong></li>
+  <li><strong>Crossover</strong></li>
+  <li><strong>Mutation</strong></li>
+  <li><strong>Stopping criteria</strong></li>
+</ol>
+
+<h4 id="221-initialize-population">2.2.1 Initialize Population</h4>
+
+<p>The process begins with a set of individuals which is called a <strong>Population</strong>. Each individual is a solution to the problem you want to solve. An individual is characterized by a set of parameters (variables) known as Genes. Genes are joined into a string to form a Chromosome (solution).</p>
+
+<p>In a genetic algorithm, the set of genes of an individual is represented using a string, in terms of an alphabet. Usually, binary values are used (string of 1s and 0s). We say that we encode the genes in a chromosome.</p>
+
+<p><img alt="Population" src="/assets/project_imgs/genetic_algorithm/population.png" width="25%" height="50%"></p>
+
+<h4 id="222-fitness-function">2.2.2 Fitness Function</h4>
+
+<p>The <strong>Fitness Function</strong> determines how fit an individual is (the ability of an individual to compete with other individuals). It gives a fitness score to each individual. The probability that an individual will be selected for reproduction is based on its fitness score.</p>
+
+<h4 id="223-selection">2.2.3 Selection</h4>
+
+<p>The idea of selection phase is to select the fittest individuals and let them pass their genes to the next generation. Two pairs of individuals (parents) are selected based on their fitness scores. Individuals with high fitness have more chance to be selected for reproduction.</p>
+
+<p>Here, I use the <strong>Roulette Wheel Selection</strong> method to do the selection.</p>
+
+<blockquote>
+  <p><strong>Roulette Wheel Selection</strong> is a common algorithm used to select an item proportional to its probability. This could be imagined similar to a Roulette wheel in a casino. Usually a proportion of the wheel is assigned to each of the possible selections based on their fitness value. This could be achieved by dividing the fitness of a selection by the total fitness of all the selections, thereby normalizing them to 1. Then a random selection is made similar to how the roulette wheel is rotated. A fixed point is chosen on the wheel circumference as shown and the wheel is rotated. The region of the wheel which comes in front of the fixed point is chosen as the parent. For the second parent, the same process is repeated.</p>
+</blockquote>
+
+<p><img alt="Roulette Wheel Selection" src="/assets/project_imgs/genetic_algorithm/Roulette%20Wheel%20Selection.png" width="50%" height="50%"></p>
+
+<p>It is clear that a fitter individual has a greater pie on the wheel and therefore a greater chance of landing in front of the fixed point when the wheel is rotated. Therefore, the probability of choosing an individual depends directly on its fitness.</p>
+
+<p>Implementation wise, we use the following steps:</p>
+
+<ol>
+  <li>Calculate S = the sum of a finesses.</li>
+  <li>Generate a random number between 0 and S.</li>
+  <li>Starting from the top of the population, keep adding the finesses to the partial sum P, till P&lt;S.</li>
+  <li>The individual for which P exceeds S is the chosen individual.</li>
+</ol>
+
+<h4 id="224-crossover">2.2.4 Crossover</h4>
+
+<p><strong>Crossover</strong> is the most significant phase in a genetic algorithm. For each pair of parents to be mated, a crossover point is chosen at random from within the genes.</p>
+
+<p>For example, consider the crossover point to be 3 as shown below.</p>
+
+<p><img alt="Crossover Point" src="/assets/project_imgs/genetic_algorithm/crossoverpoint.png" width="25%" height="50%"></p>
+
+<p><strong>Offspring</strong> are created by exchanging the genes of parents among themselves until the crossover point is reached.</p>
+
+<p><img alt="Exchanging genes among parents" src="/assets/project_imgs/genetic_algorithm/exchanging.png" width="25%" height="50%"></p>
+
+<p>The new offspring are added to the population.</p>
+
+<p><img alt="Offspring" src="/assets/project_imgs/genetic_algorithm/offspring.png" width="25%" height="50%"></p>
+<p style="font-size:10px;font-color:#969696">Figure 2.5 New Offspring</p>
+<p>&lt;/div&gt;</p>
+
+<h4 id="225-mutation">2.2.5 Mutation</h4>
+
+<p>In certain new offspring formed, some of their genes can be subjected to a mutation with a low random probability. This implies that some of the bits in the bit string can be flipped.</p>
+
+<p><img alt="mutation" src="/assets/project_imgs/genetic_algorithm/mutation.png" width="25%" height="50%"></p>
+
+<p>Mutation occurs to maintain diversity within the population and prevent premature convergence.</p>
+
+<h4 id="226-stopping-criteria">2.2.6 Stopping criteria</h4>
+
+<p>The stopping criteria, also known as termination condition, is of importance in determining when the genetic algorithm run will end. It has been observed that initially, the genetic algorithm progresses very fast with better solutions coming in every few iterations, but this tends to saturate in the later stages where the improvements are very small. We usually want a stopping criteria such that our solution is close to the optimal, at the end of the run.</p>
+
+<p>Usually, we keep one of the following termination conditions:</p>
+
+<ol>
+  <li>When there has been no improvement in the population for X iterations.</li>
+  <li>When we reach an absolute number of generations.</li>
+  <li>When the objective function value has reached a certain pre-defined value.</li>
+</ol>
+
+<p>In the project, I will take the first one as the stopping criteria.</p>
+
+<h2 id="3-implementation">3. Implementation</h2>
+
+<p>According to the genetic algorithm described above, the psuedocode is given below.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>START
+Generate the initial population
+Compute fitness
+REPEAT
+    Selection
+    Crossover
+    Mutation
+    Compute fitness
+UNTIL population has converged
+STOP
+</code></pre></div></div>
+
+<h3 id="31-define-a-chromosome-class">3.1 Define a Chromosome Class</h3>
+
+<p>According to the description about the genetic algorithm, the population consists of chromosomes. So, I, firstly, define a chromosome class (<strong>Chromosome.java</strong>) to store chromosome attributes and functions.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Chromosome</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">genes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="nc">Constants</span><span class="o">.</span><span class="na">CHROMOSOME_LENGTH</span><span class="o">];</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">chromosome</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">Chromosome</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nc">Constants</span><span class="o">.</span><span class="na">CHROMOSOME_LENGTH</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">genes</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="nc">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="mf">0.5</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nc">Constants</span><span class="o">.</span><span class="na">CHROMOSOME_LENGTH</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">genes</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+        <span class="o">}</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">chromosome</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">Chromosome</span><span class="o">(</span><span class="nc">String</span> <span class="n">chromosome</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">char</span><span class="o">[]</span> <span class="n">genesChar</span> <span class="o">=</span> <span class="n">chromosome</span><span class="o">.</span><span class="na">toCharArray</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">genesChar</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">if</span><span class="o">(</span><span class="nc">Character</span><span class="o">.</span><span class="na">isDigit</span><span class="o">(</span><span class="n">genesChar</span><span class="o">[</span><span class="n">i</span><span class="o">]))</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">genes</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">genesChar</span><span class="o">[</span><span class="n">i</span><span class="o">]));</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">chromosome</span> <span class="o">=</span> <span class="n">chromosome</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculateFittness</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">selfMutation</span><span class="o">(</span><span class="kt">int</span> <span class="n">position</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span><span class="o">[]</span> <span class="nf">getGenes</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">genes</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGenes</span><span class="o">(</span><span class="kt">int</span> <span class="n">geneValue</span><span class="o">,</span> <span class="kt">int</span> <span class="n">position</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">genes</span><span class="o">[</span><span class="n">position</span><span class="o">]</span> <span class="o">=</span> <span class="n">geneValue</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getChromosome</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">chromosome</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="32-initialize-population">3.2 Initialize Population</h3>
+
+<p>To start the genetic algorithm, initial population (<strong>GeneticAlgorithm.java</strong>) is necessary as the seed. In addition, it will be triggered to initialize population when the population shrinks to one chromosome after several iterations.</p>
+
+<p>It is worth noting that all the chromosomes in the initial population meet the constraint requirement.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="nf">initPopulation</span><span class="o">(</span><span class="kt">int</span> <span class="n">populationSize</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="n">population</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">populationSize</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">Chromosome</span> <span class="n">chromosome</span><span class="o">;</span>
+            <span class="k">do</span> <span class="o">{</span>
+                <span class="n">chromosome</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Chromosome</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">while</span><span class="o">(!</span><span class="n">isValid</span><span class="o">(</span><span class="n">chromosome</span><span class="o">));</span>
+            <span class="n">population</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">chromosome</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\nInitial Population: "</span><span class="o">);</span>
+        <span class="n">displayPhaseInfo</span><span class="o">(</span><span class="n">population</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">population</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="33-compute-fitness-score">3.3 Compute Fitness Score</h3>
+
+<p>Thirdly, the fitness score (<strong>Chromosome.java</strong>) is considered as the criteria of the selection phase to divide the population. The goal of this separation is that, later, the successful chromosomes will have more “chance” to get picked to form the next generation.</p>
+
+<p>For precise computation of double type, I use BigDecimal calss here to achieve it. And the fitness score will be converted to double type after computation</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculateFittness</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">BigDecimal</span> <span class="n">fittnessScoreBD</span> <span class="o">=</span> <span class="nc">BigDecimal</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="mf">0.0</span><span class="o">);</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nc">Constants</span><span class="o">.</span><span class="na">FITTNESS_FACTORS</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">fittnessScoreBD</span> <span class="o">=</span> <span class="n">fittnessScoreBD</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">BigDecimal</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">genes</span><span class="o">[</span><span class="n">i</span><span class="o">]).</span><span class="na">multiply</span><span class="o">(</span><span class="nc">BigDecimal</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="nc">Constants</span><span class="o">.</span><span class="na">FITTNESS_FACTORS</span><span class="o">[</span><span class="n">i</span><span class="o">])));</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">fittnessScoreBD</span><span class="o">.</span><span class="na">doubleValue</span><span class="o">();</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="34-define-selector-method">3.4 Define Selector Method</h3>
+
+<p>At the fourth phase (<strong>GeneticAlgorithm.java</strong>), high-quality chromosomes will be selected according to the Roulette Wheel Selection algorithm.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="nf">selector</span><span class="o">(</span><span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="n">parentPopulation</span><span class="o">,</span> <span class="kt">int</span> <span class="n">childPopulationSize</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="n">childPopulation</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;(</span><span class="n">childPopulationSize</span><span class="o">);</span>
+        <span class="kt">double</span> <span class="n">totalFitness</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">;</span>
+        <span class="kt">double</span><span class="o">[]</span> <span class="n">fitness</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">double</span><span class="o">[</span><span class="n">parentPopulation</span><span class="o">.</span><span class="na">size</span><span class="o">()];</span>
+        <span class="k">for</span><span class="o">(</span><span class="nc">Chromosome</span> <span class="n">chromosome</span> <span class="o">:</span> <span class="n">parentPopulation</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">totalFitness</span> <span class="o">+=</span> <span class="n">chromosome</span><span class="o">.</span><span class="na">calculateFittness</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">parentPopulation</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">index</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">fitness</span><span class="o">[</span><span class="n">index</span><span class="o">]</span> <span class="o">=</span> <span class="n">parentPopulation</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">index</span><span class="o">).</span><span class="na">calculateFittness</span><span class="o">()</span> <span class="o">/</span> <span class="n">totalFitness</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">fitness</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">fitness</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">fitness</span><span class="o">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]</span> <span class="o">+</span> <span class="n">fitness</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+        <span class="o">}</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">childPopulationSize</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Random</span><span class="o">();</span>
+            <span class="kt">double</span> <span class="n">probability</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextDouble</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">choose</span><span class="o">;</span>
+            <span class="k">for</span><span class="o">(</span><span class="n">choose</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">choose</span> <span class="o">&lt;</span> <span class="n">fitness</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">choose</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">probability</span> <span class="o">&lt;</span> <span class="n">fitness</span><span class="o">[</span><span class="n">choose</span><span class="o">])</span> <span class="o">{</span>
+                    <span class="k">break</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+           <span class="n">childPopulation</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">parentPopulation</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">choose</span><span class="o">));</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Selection: "</span><span class="o">);</span>
+        <span class="n">displayPhaseInfo</span><span class="o">(</span><span class="n">childPopulation</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">childPopulation</span><span class="o">;</span>
+    <span class="o">}</span>
+
+</code></pre></div></div>
+
+<h3 id="35-define-crossover-method">3.5 Define Crossover Method</h3>
+
+<p>The crossover phase (<strong>GeneticAlgorithm.java</strong>) is analogous to reproduction and biological crossover. In this more than one parent is selected and one or more off-springs are produced using the genetic material of the parents.</p>
+
+<p>Here, I employ the <strong>One Point Crossover</strong> method to produce off-springs.</p>
+
+<blockquote>
+  <p>In this one-point crossover, a random crossover point is selected and the tails of its two parents are swapped to get new off-springs.</p>
+</blockquote>
+
+<p><img alt="one point crossover" src="/assets/project_imgs/genetic_algorithm/one_point_crossover.png" width="40%" height="50%"></p>
+
+<p>It is worth mentioning that all the off-springs must be checked whether they meet the constraint requirement before added in the population.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="nf">crossover</span><span class="o">(</span><span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="n">parentPopulation</span><span class="o">,</span> <span class="kt">double</span> <span class="n">crossRate</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="n">childPopulation</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;();</span>
+        <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="n">individualsSelected</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;();</span>
+        <span class="n">childPopulation</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">parentPopulation</span><span class="o">);</span>
+        <span class="nc">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Random</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">parentPopulation</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">/</span> <span class="mi">2</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">crossRate</span> <span class="o">&gt;</span> <span class="n">random</span><span class="o">.</span><span class="na">nextDouble</span><span class="o">())</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+                <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+                <span class="k">do</span> <span class="o">{</span>
+                    <span class="n">m</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">parentPopulation</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">parentPopulation</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+                <span class="o">}</span> <span class="k">while</span> <span class="o">(</span><span class="n">m</span> <span class="o">==</span> <span class="n">n</span><span class="o">);</span>
+                <span class="kt">int</span> <span class="n">position</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="nc">Constants</span><span class="o">.</span><span class="na">CHROMOSOME_LENGTH</span><span class="o">-</span><span class="mi">1</span><span class="o">);</span>
+                <span class="nc">Chromosome</span> <span class="n">parent1</span> <span class="o">=</span> <span class="n">parentPopulation</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">m</span><span class="o">);</span>
+                <span class="nc">Chromosome</span> <span class="n">parent2</span> <span class="o">=</span> <span class="n">parentPopulation</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">n</span><span class="o">);</span>
+                <span class="n">individualsSelected</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">parent1</span><span class="o">);</span>
+                <span class="n">individualsSelected</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">parent2</span><span class="o">);</span>
+                <span class="nc">String</span> <span class="n">child1</span><span class="o">;</span>
+                <span class="nc">String</span> <span class="n">child2</span><span class="o">;</span>
+                <span class="n">child1</span> <span class="o">=</span> <span class="n">parent1</span><span class="o">.</span><span class="na">getChromosome</span><span class="o">().</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">position</span><span class="o">+</span><span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">parent2</span><span class="o">.</span><span class="na">getChromosome</span><span class="o">().</span><span class="na">substring</span><span class="o">(</span><span class="n">position</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Constants</span><span class="o">.</span><span class="na">CHROMOSOME_LENGTH</span><span class="o">);</span>
+                <span class="n">child2</span> <span class="o">=</span> <span class="n">parent2</span><span class="o">.</span><span class="na">getChromosome</span><span class="o">().</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">position</span><span class="o">+</span><span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">parent1</span><span class="o">.</span><span class="na">getChromosome</span><span class="o">().</span><span class="na">substring</span><span class="o">(</span><span class="n">position</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Constants</span><span class="o">.</span><span class="na">CHROMOSOME_LENGTH</span><span class="o">);</span>
+                <span class="nc">Chromosome</span> <span class="n">childChromosome1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Chromosome</span><span class="o">(</span><span class="n">child1</span><span class="o">);</span>
+                <span class="nc">Chromosome</span> <span class="n">childChromosome2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Chromosome</span><span class="o">(</span><span class="n">child2</span><span class="o">);</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">isValid</span><span class="o">(</span><span class="n">childChromosome1</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="n">childPopulation</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">childChromosome1</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">isValid</span><span class="o">(</span><span class="n">childChromosome2</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="n">childPopulation</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">childChromosome2</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\nCrossover: "</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Individuals selected for crossover: "</span> <span class="o">+</span> <span class="n">chromosomesInPopulation</span><span class="o">(</span><span class="n">individualsSelected</span><span class="o">));</span>
+        <span class="n">displayPhaseInfo</span><span class="o">(</span><span class="n">childPopulation</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">childPopulation</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="36-define-mutation-method">3.6 Define Mutation Method</h3>
+
+<p>Mutation (<strong>GeneticAlgorithm.java</strong>) may be defined as a small random tweak in the chromosome, to get a new solution. It is used to maintain and introduce diversity in the genetic population and is usually applied with a low probability.</p>
+
+<p>Here, I apply the <strong>Bit Flip Mutation</strong> method to prevent the algorithm to be blocked in a local minimum.</p>
+
+<blockquote>
+  <p>In this bit flip mutation, One or more random bits is/are selected and flipped. This is used for binary encoded genetic algorithm.</p>
+</blockquote>
+
+<p><img alt="Bit Flip Mutation" src="/assets/project_imgs/genetic_algorithm/bit_flip_mutation.png" width="50%" height="50%"></p>
+
+<p>It is also worth mentioning that:</p>
+
+<ol>
+  <li>Before mutation, the best chromosome needs to be selected and stored for later merge.</li>
+  <li>After mutation, the validity check operation is also necessary.</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="nf">mutation</span><span class="o">(</span><span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="n">parentPopulation</span><span class="o">,</span> <span class="kt">double</span> <span class="n">mutationRate</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">mutationProbability</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">mutationCount</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="n">individualsSelected</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;();</span>
+        <span class="nc">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Random</span><span class="o">();</span>
+        <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Chromosome</span><span class="o">&gt;</span> <span class="n">bestChromosomes</span> <span class="o">=</span> <span class="n">selectBestChromosomes</span><span class="o">(</span><span class="n">parentPopulation</span><span class="o">);</span>
+        <span class="k">do</span> <span class="o">{</span>
+            <span class="k">for</span><span class="o">(</span><span class="nc">Chromosome</span> <span class="n">chromosome</span> <span class="o">:</span> <span class="n">parentPopulation</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">mutationRate</span> <span class="o">&gt;</span> <span class="n">random</span><span class="o">.</span><span class="na">nextDouble</span><span class="o">())</span> <span class="o">{</span>
+                    <span class="kt">int</span> <span class="n">position</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="nc">Constants</span><span class="o">.</span><span class="na">CHROMOSOME_LENGTH</span><span class="o">);</span>
+                    <span class="n">chromosome</span><span class="o">.</span><span class="na">selfMutation</span><span class="o">(</span><span class="n">position</span><span class="o">);</span>
+                    <span class="n">individualsSelected</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">chromosome</span><span class="o">);</span>
+                    <span class="n">mutationCount</span><span class="o">++;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">while</span><span class="o">(</span><span class="n">mutationCount</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">);</span>
+        <span class="nc">DecimalFormat</span> <span class="n">df</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DecimalFormat</span><span class="o">(</span><span class="s">"0.00"</span><span class="o">);</span>
+        <span class="n">mutationProbability</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="na">format</span><span class="o">((</span><span class="kt">double</span><span class="o">)</span><span class="n">mutationCount</span> <span class="o">/</span> <span class="n">parentPopulation</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\nMutation: "</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Mutation Probability: "</span> <span class="o">+</span> <span class="n">mutationProbability</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Individuals selected for mutation: "</span> <span class="o">+</span> <span class="n">chromosomesInPopulation</span><span class="o">(</span><span class="n">individualsSelected</span><span class="o">));</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"After mutation, the population size: "</span> <span class="o">+</span> <span class="n">parentPopulation</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+        <span class="n">deleteInvalidChromosome</span><span class="o">(</span><span class="n">parentPopulation</span><span class="o">);</span>
+        <span class="n">parentPopulation</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">bestChromosomes</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"After deleting invalid chromosomes and adding the best chromosome, the final population size: "</span> <span class="o">+</span> <span class="n">parentPopulation</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+        <span class="n">displayPhaseInfo</span><span class="o">(</span><span class="n">parentPopulation</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">parentPopulation</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="37-setting-stopping-criteria">3.7 Setting stopping criteria</h3>
+
+<p>The algorithm terminates if the population has converged (does not produce offspring which are significantly different from the previous generation). Then it is said that the genetic algorithm has provided a set of solutions to our problem.</p>
+
+<p>Here, when there has been no improvement in the population for X iterations, the genetic algorithm will stop running.</p>
+
+<p>To specify, in the genetic algorithm, I keep a counter which keeps track of the generations for which there has been no improvement in the population. Initially, we set this counter to zero. Each time we don’t generate off-springs which are better than the individuals in the population, we increment the counter. However, if the fitness any of the off-springs is better, then we reset the counter to zero. The algorithm terminates when the counter reaches a predetermined value.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">countOfSameResult</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+<span class="k">while</span><span class="o">(</span><span class="n">countOfSameResult</span> <span class="o">!=</span> <span class="nc">Constants</span><span class="o">.</span><span class="na">MAX_COUNT_OF_SAME_RESULT</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="k">if</span><span class="o">(</span><span class="nc">Constants</span><span class="o">.</span><span class="na">optimal_total_return</span> <span class="o">==</span> <span class="n">optimalReturnOfIteration</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">countOfSameResult</span><span class="o">++;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span><span class="o">(</span><span class="nc">Constants</span><span class="o">.</span><span class="na">optimal_total_return</span> <span class="o">&lt;</span> <span class="n">optimalReturnOfIteration</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Constants</span><span class="o">.</span><span class="na">optimal_total_return</span> <span class="o">=</span> <span class="n">optimalReturnOfIteration</span><span class="o">;</span>
+        <span class="n">countOfSameResult</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">countOfSameResult</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="4-results--analysis">4. Results &amp; Analysis</h2>
+
+<p>As requested in the project:</p>
+
+<ol>
+  <li>the <strong>crossover rate</strong> should be between <strong>0.8 and 0.95</strong>.</li>
+  <li>the <strong>mutation rate</strong> needs to be set between <strong>0.001 and 0.1</strong>.</li>
+  <li>the <strong>fitness function</strong> is <strong>maximize $f(x_1, x_2, x_3, x_4) = 0.2x_1 + 0.3x_2 + 0.5x_3 + 0.1x_4$</strong>
+</li>
+</ol>
+
+<h3 id="41-scenario-01---accuracy--performability">4.1 Scenario 01 - <strong>Accuracy &amp; Performability</strong>
+</h3>
+
+<h4 id="case-01---with-small-initial-population">Case 01 - <strong>with small initial population</strong>
+</h4>
+
+<p><strong><em>Purpose:</em></strong></p>
+
+<p>Check whether the program can return the correct result when running with small initial population.</p>
+
+<p><strong><em>Requirements:</em></strong></p>
+
+<ol>
+  <li>
+    <p><strong>Basics:</strong>:</p>
+
+    <ul>
+      <li>Chromosome size: <strong>4</strong>
+</li>
+      <li>Initial population size: <strong>10</strong>  <strong>&lt;–</strong>
+</li>
+      <li>Maximum iteration count (result with no improvement): <strong>50</strong>
+</li>
+      <li>Crossover rate: <strong>0.9</strong>
+</li>
+      <li>Mutation rate: <strong>0.1</strong>
+</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Constraints</strong>:</p>
+
+    <ul>
+      <li>$0.5x_1 + 1.0x_2 + 1.5x_3 + 0.1x_4 \leq 3.1$</li>
+      <li>$0.3x_1 + 0.8x_2 + 1.5x_3 + 0.4x_4 \leq 2.5$</li>
+      <li>$0.2x_1 + 0.2x_2 + 0.3x_3 + 0.1x_4 \leq 0.4$</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong><em>Hypothesis &amp; Analysis:</em></strong></p>
+
+<ol>
+  <li>
+    <p><strong>Optimal solution</strong>: [0011]</p>
+
+    <ul>
+      <li>$x_1 = 0$</li>
+      <li>$x_2 = 0$</li>
+      <li>$x_3 = 1$</li>
+      <li>$x_4 = 1$</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Optimal total return</strong>: 0.6</p>
+  </li>
+</ol>
+
+<p><strong><em>Results:</em></strong></p>
+
+<p><img alt="Scenario 01 - Case 01" src="/assets/project_imgs/genetic_algorithm/case01_01.png" width="48%" height="50%">
+<img alt="Scenario 01 - Case 01" src="/assets/project_imgs/genetic_algorithm/case01_02.png" width="43%" height="50%"></p>
+
+<h4 id="case-02---with-large-initial-population">Case 02 - <strong>with large initial population</strong>
+</h4>
+
+<p><strong><em>Purpose:</em></strong></p>
+
+<p>Check whether the program can return the correct result when running with large initial population.</p>
+
+<p><strong><em>Requirements:</em></strong></p>
+
+<ol>
+  <li>
+    <p><strong>Basics:</strong>:</p>
+
+    <ul>
+      <li>Chromosome size: <strong>4</strong>
+</li>
+      <li>Initial population size: <strong>100</strong>  <strong>&lt;–</strong>
+</li>
+      <li>Maximum iteration count (result with no improvement): <strong>50</strong>
+</li>
+      <li>Crossover rate: <strong>0.9</strong>
+</li>
+      <li>Mutation rate: <strong>0.1</strong>
+</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Constraints</strong>:</p>
+
+    <ul>
+      <li>$0.5x_1 + 1.0x_2 + 1.5x_3 + 0.1x_4 \leq 3.1$</li>
+      <li>$0.3x_1 + 0.8x_2 + 1.5x_3 + 0.4x_4 \leq 2.5$</li>
+      <li>$0.2x_1 + 0.2x_2 + 0.3x_3 + 0.1x_4 \leq 0.4$</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong><em>Hypothesis &amp; Analysis:</em></strong></p>
+
+<ol>
+  <li>
+    <p><strong>Optimal solution</strong>: [0011]</p>
+
+    <ul>
+      <li>$x_1 = 0$</li>
+      <li>$x_2 = 0$</li>
+      <li>$x_3 = 1$</li>
+      <li>$x_4 = 1$</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Optimal total return</strong>: 0.6</p>
+  </li>
+</ol>
+
+<p><strong><em>Results:</em></strong></p>
+
+<p><img alt="Scenario 01 - Case 02" src="/assets/project_imgs/genetic_algorithm/case02_01.png" width="59%" height="50%">
+<img alt="Scenario 01 - Case 02" src="/assets/project_imgs/genetic_algorithm/case02_02.png" width="39%" height="50%"></p>
+
+<h4 id="case-03---with-large-maximum-iteration-count">Case 03 - <strong>with large maximum iteration count</strong>
+</h4>
+
+<p><strong><em>Purpose:</em></strong></p>
+
+<p>Check whether the program can return the correct result when running with large maximum iteration count.</p>
+
+<p><strong><em>Requirements:</em></strong></p>
+
+<ol>
+  <li>
+    <p><strong>Basics:</strong>:</p>
+
+    <ul>
+      <li>Chromosome size: <strong>4</strong>
+</li>
+      <li>Initial population size: <strong>100</strong>
+</li>
+      <li>Maximum iteration count (result with no improvement): <strong>500</strong>  <strong>&lt;–</strong>
+</li>
+      <li>Crossover rate: <strong>0.9</strong>
+</li>
+      <li>Mutation rate: <strong>0.1</strong>
+</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Constraints</strong>:</p>
+
+    <ul>
+      <li>$0.5x_1 + 1.0x_2 + 1.5x_3 + 0.1x_4 \leq 3.1$</li>
+      <li>$0.3x_1 + 0.8x_2 + 1.5x_3 + 0.4x_4 \leq 2.5$</li>
+      <li>$0.2x_1 + 0.2x_2 + 0.3x_3 + 0.1x_4 \leq 0.4$</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong><em>Hypothesis &amp; Analysis:</em></strong></p>
+
+<ol>
+  <li>
+    <p><strong>Optimal solution</strong>: [0011]</p>
+
+    <ul>
+      <li>$x_1 = 0$</li>
+      <li>$x_2 = 0$</li>
+      <li>$x_3 = 1$</li>
+      <li>$x_4 = 1$</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Optimal total return</strong>: 0.6</p>
+  </li>
+</ol>
+
+<p><strong><em>Results:</em></strong></p>
+
+<p><img alt="Scenario 01 - Case 03" src="/assets/project_imgs/genetic_algorithm/case03_01.png" width="30%" height="50%"></p>
+
+<h2 id="5-conclusion">5. Conclusion</h2>
+<p>According to the discussion above, the genetic algorithm is a method for solving both constrained and unconstrained optimization problems that is based on natural selection, the process that drives biological evolution. The genetic algorithm repeatedly modifies a population of individual solutions. At each step, the genetic algorithm selects individuals at random from the current population to be parents and uses them to produce the children for the next generation. Over successive generations, the population “evolves” toward an optimal solution.</p>
+
+<p>Because of the attribute of the problem in the project, I decided to apply the genetic algorithm to solve the maximization of the investment. Via the operations of selection, crossover, and mutation, the genetic algorithm will converge over successive generations towards the global optium to obtain the optimal total return.</p>
+
+<p class="text-center">
+<a class="m-1 btn btn-outline-primary btn-2 " href="https://github.com/Lei-Xu/Genetic-Algorithm">
+  Learn More
+</a>
+</p>
+
+</div>
+  </main>
+
+  <footer class="mt-auto py-3 text-center">
+
+  <small class="text-muted mb-2">
+    <i class="fas fa-code"></i> with <i class="fas fa-heart"></i>
+    by <strong>Lei Xu</strong>
+  </small>
+
+  <div class="container-fluid justify-content-center">
+<a class="social mx-1" href="mailto:ethanxu90@gmail.com" style="color: #6c757d" onmouseover="this.style.color='#db4437'" onmouseout="this.style.color='#6c757d'">
+      <i class="fas fa-envelope fa-1x"></i>
+    </a><a class="social mx-1" href="https://www.github.com/Lei-Xu" style="color: #6c757d" onmouseover="this.style.color='#333333'" onmouseout="this.style.color='#6c757d'">
+      <i class="fab fa-github fa-1x"></i>
+    </a><a class="social mx-1" href="https://www.linkedin.com/in/leix" style="color: #6c757d" onmouseover="this.style.color='#007bb5'" onmouseout="this.style.color='#6c757d'">
+      <i class="fab fa-linkedin-in fa-1x"></i>
+    </a>
+
+</div>
+
+</footer>
+  <!-- GitHub Buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- jQuery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- wow.js CDN & Activation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.js"></script>
+<script> new WOW().init(); </script>
+
+<!-- Initialize all tooltips -->
+<script>
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+
+</body>
+
+</html>

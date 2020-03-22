@@ -1,0 +1,19 @@
+- name: MySQL
+  percentage: 90
+  color: primary
+
+- name: Cassandra
+  percentage: 90
+  color: primary
+
+- name: Redis
+  percentage: 90
+  color: primary
+
+- name: PostgreSQL
+  percentage: 80
+  color: success
+
+- name: JanusGraph
+  percentage: 75
+  color: info

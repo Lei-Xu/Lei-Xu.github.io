@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+
+<html lang="en" class="h-100">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content=""Everyday, I turn ideas :collision: into code with Espresso Macchiato :coffee: , and never broke production."">
+
+  <title>< portfoLEI /></title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <!-- Animate CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css" type="text/css"/>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+
+  <!-- Mathjax -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  </script>
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+</head>
+
+
+<body class="d-flex flex-column h-100">
+
+  <main class="flex-shrink-0 container mt-5">
+  <nav class="navbar navbar-expand-lg navbar-light">
+
+  <a class="navbar-brand" href="/"><h5><b>&lt; portfoLEI /&gt;</b></h5></a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav ml-auto">
+<a class="nav-item nav-link active" href="/projects/">Projects</a>
+
+      <a class="nav-item nav-link " href="/blog/">Blog</a>
+
+      <a class="nav-item nav-link " href="/about/">About</a>
+
+      
+
+    </div>
+  </div>
+
+</nav>
+  <div class="col-lg-10 mx-auto mt-5 post">
+  <h1 id="probabilistic-search-engine">Probabilistic Search Engine</h1>
+
+<p><img src="https://cdn.dribbble.com/users/108183/screenshots/4605344/search_icon_interaction.gif" alt="preview"></p>
+
+<h2 id="1-background">1. Background</h2>
+
+<p>In this project, I will apply the <strong>BM25</strong> algorithm to convert my indexer, implemented in the last project using the SPIMI algorithm, into a probabilistic search engine. And then I will do comprehensive tests and analyze resuts.</p>
+
+<h2 id="2-implementation">2. Implementation</h2>
+
+<p>Based on the SPIMI indexer implemented in last project, I will use the BM25 algorithm, known as Okapi BM25, as my default similarity algorithm, which is what’s used to score results as they relate to a query.</p>
+
+<blockquote>
+  <p>In information retrieval, BM25 (BM stands for Best Matching) is a ranking function used by search engines to rank matching documents according to their relevance to a given search query. It is based on the probabilistic retrieval framework developed in the 1970s and 1980s by Stephen E. Robertson, Karen Spärck Jones, and others.</p>
+</blockquote>
+
+<h3 id="21-techniques">2.1 Techniques</h3>
+
+<p><strong>BM25</strong> is a bag-of-words retrieval function that ranks a set of documents based on the query terms appearing in each document, regardless of the inter-relationship between the query terms within a document (e.g., their relative proximity).</p>
+
+<p>It is not a single function, but actually a whole family of scoring functions, with slightly different components and parameters. One of the most prominent instantiations of the function is as follows.</p>
+
+<p>Given a query <strong>Q</strong>, containing keywords 
+$q_1, …q_n$,the BM25 score of a document <strong>D</strong> is:</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>$scroe(D, Q) = \sum_{i=1}^{n}{IDF(q_i)\times{\frac{f(q_i, D)\times(k_1 + 1)}{f(q_i, D) + k_1 \times(1 - b + b \times\frac{</td>
+      <td>D</td>
+      <td>}{avgdl})}}}$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>We can see a few common components like $q_i$, $IDF(q_i)$, $f(q_i,D)$, $k_1$, b, and something about field lengths. Here’s what each of these is all about:</p>
+
+<ol>
+  <li>
+    <p><strong>$q_i$</strong> is the ith query term.</p>
+
+    <p>For example, if I search for “shane” there’s only 1 query term, so $q_0$ is “shane”. If I search for “shane connelly” in English, the program will see the whitespace and tokenize this as 2 terms: $q_0$ will be “shane” and $q_1$ will be “connelly”. These query terms are plugged into the other bits of the equation and all of it is summed up.</p>
+  </li>
+  <li>
+    <p><strong>$IDF(q_i)$</strong> is the inverse document frequency of the ith query term.</p>
+
+    <p>The IDF component of our formula measures how often a term occurs in all of the documents and “penalizes” terms that are common. The actual formula BM25 uses for this part is:</p>
+
+    <p>$IDF(q_i) = \log[\frac{N}{df_t}]$</p>
+    <ul>
+      <li>
+<strong>N</strong> is the number of documents in the collection</li>
+      <li>
+<strong>$df_t$</strong> is the document frequency of the ith query term.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>$f(q_i,D)$</strong> is “how many times does the ith query term occur in document D?”</p>
+
+    <p>The way to think about f(qi,D) is that the more times the query term(s) occur a document, the higher its score will be.</p>
+  </li>
+  <li>
+    <p><strong>$k_1$</strong> is a variable which helps determine term frequency saturation characteristics.</p>
+
+    <p>That is, it limits how much a single query term can affect the score of a given document. It does this through approaching an asymptote. A higher/lower k1 value means that the slope of “tf() of BM25” curve changes. This has the effect of changing how “terms occurring extra times add extra score.” An interpretation of k1 is that for documents of the average length, it is the value of the term frequency that gives a score of half the maximum score for the considered term. <strong>By default, k1 has a value of 1.2 in the project</strong>.</p>
+  </li>
+  <li>
+    <p><strong>b</strong> is a variable which shows up in the denominator and that it’s multiplied by the ratio of the field length we just discussed.</p>
+
+    <p>If b is bigger, the effects of the length of the document compared to the average length are more amplified. To see this, you can imagine if you set b to 0, the effect of the length ratio would be completely nullified and the length of the document would have no bearing on the score. <strong>By default, b has a value of 0.75 in the project</strong>.</p>
+  </li>
+</ol>
+
+<p>So, the final BM25 formula that I will use in the project is:</p>
+
+<p>$RSV_d = \sum_{i=1}^{n}{\log[\frac{N}{df_t}]\times{\frac{(k_1 + 1)\times {tf_{td}}}{k_1 \times[(1 - b) + b \times\frac{L_d}{Lave})] + tf_{td}}}}$</p>
+
+<h3 id="22-implementation">2.2 Implementation</h3>
+
+<p>I will implement the project by following four steps:</p>
+
+<ol>
+  <li>Fetching Documents (<strong>InvertedIndex.py</strong>)</li>
+  <li>Preprocessing Documents (<strong>TextNormalizer.py</strong>)</li>
+  <li>Performing SPIMI (<strong>Inverter.py</strong>)</li>
+  <li>Ranking (<strong>BM25.py</strong>)</li>
+  <li>Querying (<strong>QueryProcessor.py</strong>)</li>
+</ol>
+
+<h4 id="221-fetching">2.2.1 Fetching</h4>
+
+<p>This is the module responsible for extracting all of the documents from the corpus. It parses line by line for the <reuters> tag, extracts the NEWID attribute, the takes all the content between the following &lt;BODY&gt;&lt;/BODY&gt; tags. The module returns a collection of documents to the main module for the next step.</reuters></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">path</span> <span class="o">=</span> <span class="s">'reuters21578/*.sgm'</span>
+<span class="c1"># path for each reuters file
+</span><span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="n">block_files</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">doc_length_dict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="c1"># loop through each file
+</span><span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+    <span class="c1"># parse each document separately
+</span>    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">),</span> <span class="s">'html.parser'</span><span class="p">)</span>
+    <span class="n">documents</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">'reuters'</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># loop through all the documents
+</span>    <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">:</span>
+    <span class="c1"># tokenize each document
+</span>        <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">body</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">doc</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">text</span>
+          <span class="n">doc_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="s">'newid'</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">))</span>
+          <span class="n">doc_length_dict</span><span class="p">[</span><span class="n">doc_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+          <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span> <span class="o">+</span> <span class="n">normalizer_method</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">doc_id</span><span class="p">)</span>
+    <span class="n">block_files</span> <span class="o">=</span> <span class="n">block_files</span> <span class="o">+</span> <span class="n">spimi_invert</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">block_size</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="222-preprocessing">2.2.2 Preprocessing</h4>
+
+<p>Then I will implement the <strong>Lossy Dictionary Compression</strong> techniques, known as <strong>Normalization</strong>, by removing numbers, blanks, punctuations etc.</p>
+
+<p>In the part, I will include all the methods regarding the lossy dictionary compression in the <strong>TextNormalizer.py</strong> file.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">nltk.stem</span> <span class="kn">import</span> <span class="n">PorterStemmer</span>
+<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">punctuation</span>
+<span class="k">def</span> <span class="nf">unfiltered</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">token_tuples</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="nb">id</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">no_numbers</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">remove_numbers</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">token_tuples</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="nb">id</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">case_folding</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">remove_numbers</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">token_tuples</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">thirty_stop_words</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">remove_numbers</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">remove_stop_words_30</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">token_tuples</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">one_hundred_fifty_stop_words</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">remove_numbers</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">remove_stop_words_150</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">token_tuples</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stemming</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">remove_numbers</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">remove_stop_words_150</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">stem_tokens</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">token_tuples</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The detailed statistical data is shown below :</p>
+
+<table class="tg">
+  <tr>
+    <th></th>
+    <th colspan="3"> Distinct Terms </th>
+    <th colspan="3"> Non Positional Postings</th>
+    <th colspan="3"> Tokens</th>
+  </tr>
+  <tr>
+    <td></td>
+    <td> number </td>
+    <td> Δ% </td>
+    <td> T% </td>
+    <td> number </td>
+    <td> Δ% </td>
+    <td> T% </td>
+    <td> number </td>
+    <td> Δ% </td>
+    <td> T% </td>
+  </tr>
+  <tr>
+    <td> unfiltered </td>
+    <td> 129070 </td>
+    <td></td>
+    <td></td>
+    <td> 2918161 </td>
+    <td></td>
+    <td></td>
+    <td> 3091405 </td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> no numbers </td>
+    <td> 69704 </td>
+    <td> -32.89% </td>
+    <td> -32.89% </td>
+    <td> 1621327 </td>
+    <td> -8.79% </td>
+    <td> -8.79% </td>
+    <td> 2625084 </td>
+    <td> -9.64% </td>
+    <td> -9.64% </td>
+  </tr>
+  <tr>
+    <td> 30 stop words </td>
+    <td> 52875 </td>
+    <td> -0.24% </td>
+    <td> -33.13% </td>
+    <td> 1503153 </td>
+    <td> -14.04% </td>
+    <td> -24.83% </td>
+    <td> 2625084 </td>
+    <td> -31.54% </td>
+    <td> -38.52% </td>
+  </tr>
+  <tr>
+    <td> stemming </td>
+    <td> 41783 </td>
+    <td> -31.47% </td>
+    <td> -64.60% </td>
+    <td> 1081540 </td>
+    <td> -18.96% </td>
+    <td> -12.88% </td>
+    <td> 1706555 </td>
+    <td> -0% </td>
+    <td> -24% </td>
+  </tr>
+</table>
+
+<p><strong>Table 2-1</strong> above shows the number of terms for different levels of preprocessing (column 2). The number of terms is the main factor in determining the size of the dictionary. The number of non-positional postings (column 3) is an indicator of the expected size of the non-positional index of the collection. The expected size of a positional index is related to the number of positions it must encode (column 4).</p>
+
+<p>In general, the statistics in Table 2-1 show that preprocessing affects the size of the dictionary and the number of non-positional postings greatly. <strong>Stemming</strong> reduces the number of (distinct) terms by <strong>31.47%</strong> and the number of non-positional postings by <strong>18.96%</strong>. The treatment of the most frequent words is also important. The rule of 30 states that the <strong>30 most common words **account for **33.13%</strong> of the tokens in written text.</p>
+
+<h4 id="223-spimi">2.2.3 SPIMI</h4>
+
+<p>The SPIMI algorithm is implemented here. All of the block files are opened, and their top lines are read into an array. The minimum term alphabetically is identified (as well as duplicates in other first lines), postings lists are combined and the (term, postingList) pair are written into the index file.</p>
+
+<h4 id="224-ranking">2.2.4 Ranking</h4>
+
+<p>In the ranking part, I will use the BM25 formual discussed above to calculate the RSV.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">RankDocuments</span><span class="p">(</span><span class="n">index_file</span><span class="p">,</span> <span class="n">inverted_index</span><span class="p">):</span>
+    <span class="n">k1</span> <span class="o">=</span> <span class="mf">1.2</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mf">0.75</span>
+    <span class="c1"># fetch collection stats
+</span>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"collection_stats"</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">stats_files</span><span class="p">:</span>
+        <span class="n">N</span><span class="p">,</span> <span class="n">doc_length_dict</span><span class="p">,</span> <span class="n">avg_doc_length</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">stats_files</span><span class="p">)</span>
+    <span class="n">stats_files</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">doc_length_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">doc_length_dict</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">term</span><span class="p">,</span> <span class="n">postings</span> <span class="ow">in</span> <span class="n">inverted_index</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">post</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">postings</span><span class="p">):</span>
+            <span class="n">tftd</span> <span class="o">=</span> <span class="n">post</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">doc_id</span> <span class="o">=</span> <span class="n">post</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ld</span> <span class="o">=</span> <span class="n">doc_length_dict</span><span class="p">[</span><span class="n">doc_id</span><span class="p">]</span>
+            <span class="n">inverted_index</span><span class="p">[</span><span class="n">term</span><span class="p">][</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">post</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">post</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">calculate_rsv</span><span class="p">(</span><span class="n">avg_doc_length</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">ld</span><span class="p">,</span> <span class="n">tftd</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">index_file</span><span class="p">,</span> <span class="s">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+        <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">inverted_index</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">calculate_rsv</span><span class="p">(</span><span class="n">avg_doc_length</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">ld</span><span class="p">,</span> <span class="n">tftd</span><span class="p">):</span>
+    <span class="n">avg_doc_length</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">avg_doc_length</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">k1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">k1</span><span class="p">)</span>
+    <span class="n">ld</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ld</span><span class="p">)</span>
+    <span class="n">tftd</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tftd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(((</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">tftd</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">k1</span> <span class="o">*</span> <span class="p">(((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="n">ld</span> <span class="o">/</span> <span class="n">avg_doc_length</span><span class="p">)))</span> <span class="o">+</span> <span class="n">tftd</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h4 id="225-querying">2.2.5 Querying</h4>
+
+<p>Here, I will provide the mechanism for processing boolean queries and returning results in the console.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">ranked_search</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s">"This query returns the top 20 results, using BM25 Ranking"</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">get_user_input</span><span class="p">(</span><span class="s">"Enter a search query: "</span><span class="p">)</span>
+    <span class="n">inverted_index</span> <span class="o">=</span> <span class="n">get_inverted_index</span><span class="p">(</span><span class="n">index_file</span><span class="p">)</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="n">GetRankedResults</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">inverted_index</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">[:</span><span class="mi">20</span><span class="p">]:</span>
+        <span class="k">print</span> <span class="s">"Document ID: </span><span class="si">%</span><span class="s">s RSVd: </span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</code></pre></div></div>
+
+<h2 id="3-analysis--test">3. Analysis &amp; Test</h2>
+
+<h3 id="31-scenario-01---test-queries-i-designed">3.1 Scenario 01 - Test Queries I Designed</h3>
+
+<ol>
+  <li>
+    <p><strong>Case 1</strong></p>
+
+    <p><strong><em>Purpose:</em></strong></p>
+
+    <p>Check whether the program can handle the situation and return the correct result when doing a single keyword (<strong>out 0f dictionary</strong>) query.</p>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>QueryProcessor.py</strong> file with the memory size argument. <strong>python QueryProcessor.py</strong>
+</li>
+      <li>Enter a keyword which is not in the dictionary, like <strong>johnnys</strong>
+</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Hypothesis &amp; Analysis:</em></strong></p>
+
+    <p>The console shows <strong>nothing</strong></p>
+
+    <p><strong><em>Results:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Scenario 01 Case01" src="/assets/project_imgs/probabilistic_search_engine/single_keyword_query_case02.png" width="50%" height="50%"></p>
+
+<ol>
+  <li>
+    <p><strong>Case 2</strong></p>
+
+    <p><strong><em>Purpose:</em></strong></p>
+
+    <p>Check whether the program can return the correct result when doing a multiple keywords query.</p>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>QueryProcessor.py</strong> file with the memory size argument. <strong>python QueryProcessor.py</strong>
+</li>
+      <li>Enter multiple keywords, like <strong>karim or kids</strong>
+</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Hypothesis &amp; Analysis:</em></strong></p>
+
+    <p>The console shows <strong>“Document ID: 3602 RSVd: 4.79258156572
+Document ID: 16211 RSVd: 4.5970339289
+Document ID: 7733 RSVd: 4.48897999477
+Document ID: 644 RSVd: 3.89785235629
+Document ID: 11031 RSVd: 3.86137006891
+Document ID: 4751 RSVd: 3.84926124291
+Document ID: 4304 RSVd: 3.80157596942
+Document ID: 4884 RSVd: 3.74078851365
+Document ID: 2219 RSVd: 3.72090931867
+Document ID: 13656 RSVd: 3.69276890223
+Document ID: 20237 RSVd: 3.54385578501
+Document ID: 20634 RSVd: 3.42837894915
+Document ID: 19787 RSVd: 3.41724383167
+Document ID: 1734 RSVd: 3.21294199835
+Document ID: 8023 RSVd: 3.21294199835
+Document ID: 2196 RSVd: 3.16652710592
+Document ID: 8999 RSVd: 3.14829859423
+Document ID: 1084 RSVd: 3.11632715575
+Document ID: 11049 RSVd: 3.0668424205
+Document ID: 1459 RSVd: 3.05326181993”</strong></p>
+
+    <p><strong><em>Results:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Scenario 01 Case02" src="/assets/project_imgs/probabilistic_search_engine/multiple_keywords_query_or_case01.png" width="50%" height="50%"></p>
+
+<ol>
+  <li>
+    <p><strong>Case 3</strong></p>
+
+    <p><strong><em>Purpose:</em></strong></p>
+
+    <p>Check whether the program can return the correct result when doing a multiple keywords query.</p>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>QueryProcessor.py</strong> file with the memory size argument. <strong>python QueryProcessor.py</strong>
+</li>
+      <li>Enter multiple keywords, like <strong>China and America and Canada</strong>
+</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Hypothesis &amp; Analysis:</em></strong></p>
+
+    <p>The console shows <strong>“Document ID: 12099 RSVd: 7.31857501882
+Document ID: 17822 RSVd: 6.87862251291
+Document ID: 11751 RSVd: 6.6872899477
+Document ID: 19097 RSVd: 6.38319547296
+Document ID: 3835 RSVd: 6.22082840232
+Document ID: 314 RSVd: 6.1786491228
+Document ID: 15146 RSVd: 6.02305581972
+Document ID: 18467 RSVd: 6.00009003099
+Document ID: 8143 RSVd: 5.97777021357
+Document ID: 4041 RSVd: 5.81501042011
+Document ID: 4125 RSVd: 5.81501042011
+Document ID: 17704 RSVd: 5.51386239759
+Document ID: 17235 RSVd: 5.46280878741
+Document ID: 3966 RSVd: 5.25812402851
+Document ID: 516 RSVd: 5.12488472774
+Document ID: 18201 RSVd: 5.09456921888
+Document ID: 13884 RSVd: 4.87054093075
+Document ID: 21530 RSVd: 4.86205437385
+Document ID: 3546 RSVd: 4.58830699081
+Document ID: 4235 RSVd: 4.58574834194”</strong></p>
+
+    <p><strong><em>Results:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Scenario 01 Case03" src="/assets/project_imgs/probabilistic_search_engine/multiple_keywords_query_and_case01.png" width="50%" height="50%"></p>
+
+<h3 id="32-scenario-02---test-queries-in-the-project">3.2 Scenario 02 - Test Queries in the Project</h3>
+
+<ol>
+  <li>
+    <p><strong>Case 1 - Democrats’ welfare and healthcare reform policies</strong></p>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>QueryProcessor.py</strong> file with the memory size argument. <strong>python QueryProcessor.py</strong>
+</li>
+      <li>Enter the keywords <strong>Democrats’ welfare and healthcare reform policies</strong>
+</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Hypothesis &amp; Analysis:</em></strong></p>
+
+    <p>The console shows <strong>“Document ID: 18731 RSVd: 4.98325477421
+Document ID: 20449 RSVd: 4.49406152388
+Document ID: 20023 RSVd: 4.32147517301
+Document ID: 18161 RSVd: 4.2352933021
+Document ID: 19134 RSVd: 4.21012046909
+Document ID: 7401 RSVd: 4.19064247081
+Document ID: 7433 RSVd: 4.15733703164
+Document ID: 18683 RSVd: 3.99380512109
+Document ID: 4268 RSVd: 3.93476195994
+Document ID: 4006 RSVd: 3.84699849479
+Document ID: 11204 RSVd: 3.8462341037
+Document ID: 17940 RSVd: 3.82003719958
+Document ID: 18469 RSVd: 3.65612408837
+Document ID: 9248 RSVd: 3.6381502828
+Document ID: 9096 RSVd: 3.5315440187
+Document ID: 8139 RSVd: 3.43537385346
+Document ID: 8307 RSVd: 3.43537385346
+Document ID: 951 RSVd: 3.40575146814
+Document ID: 6940 RSVd: 3.3418908256
+Document ID: 7019 RSVd: 3.27046865523”</strong></p>
+
+    <p><strong><em>My Result:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Test Queries in the Project Case01" src="/assets/project_imgs/probabilistic_search_engine/test_queries_from_ta_case01.png" width="35%" height="50%"></p>
+
+<ol>
+  <li>
+    <p><strong>Case 2 - Drug company bankruptcies</strong></p>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>QueryProcessor.py</strong> file with the memory size argument. <strong>python QueryProcessor.py</strong>
+</li>
+      <li>Enter the keywords <strong>Drug company bankruptcies</strong>
+</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Hypothesis &amp; Analysis:</em></strong></p>
+
+    <p>The console shows <strong>“Document ID: 4050 RSVd: 9.53754573569
+Document ID: 16771 RSVd: 7.92054563718
+Document ID: 8209 RSVd: 6.53326444025
+Document ID: 16994 RSVd: 6.13805385759
+Document ID: 7125 RSVd: 5.55729196867
+Document ID: 6089 RSVd: 5.01804901894
+Document ID: 11434 RSVd: 4.70332817454
+Document ID: 6544 RSVd: 4.58168664107
+Document ID: 1805 RSVd: 4.24169669188
+Document ID: 21239 RSVd: 4.08054405021
+Document ID: 3577 RSVd: 3.97974378547
+Document ID: 3328 RSVd: 3.9634259294
+Document ID: 1391 RSVd: 3.94166965107
+Document ID: 19640 RSVd: 3.86826141176
+Document ID: 9542 RSVd: 3.86191227835
+Document ID: 2679 RSVd: 3.81911580189
+Document ID: 10026 RSVd: 3.70516180368
+Document ID: 17604 RSVd: 3.67697375953
+Document ID: 21251 RSVd: 3.6477876276
+Document ID: 18716 RSVd: 3.62361602612”</strong></p>
+
+    <p><strong><em>My Result:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Test Queries in the Project Case02" src="/assets/project_imgs/probabilistic_search_engine/test_queries_from_ta_case02.png" width="35%" height="50%"></p>
+
+<ol>
+  <li>
+    <p><strong>Case 3 - George Bush</strong></p>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>QueryProcessor.py</strong> file with the memory size argument. <strong>python QueryProcessor.py</strong>
+</li>
+      <li>Enter the keywords <strong>George Bush</strong>
+</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Hypothesis &amp; Analysis:</em></strong></p>
+
+    <p>The console shows <strong>“Document ID: 20891 RSVd: 6.7415735697
+Document ID: 8593 RSVd: 6.04271446855
+Document ID: 4008 RSVd: 4.43298306691
+Document ID: 20719 RSVd: 4.33954840096
+Document ID: 20860 RSVd: 4.10518997796
+Document ID: 16824 RSVd: 3.92099423062
+Document ID: 7525 RSVd: 3.76855636171
+Document ID: 2711 RSVd: 3.47062066523
+Document ID: 16780 RSVd: 3.24262168624
+Document ID: 4853 RSVd: 2.85617002809
+Document ID: 2766 RSVd: 2.84335570593
+Document ID: 10400 RSVd: 2.8180689457
+Document ID: 6564 RSVd: 2.80559348062
+Document ID: 5459 RSVd: 2.69809439266
+Document ID: 2733 RSVd: 2.64185805748
+Document ID: 15284 RSVd: 2.60922760572
+Document ID: 16115 RSVd: 2.59852917817
+Document ID: 10682 RSVd: 2.59852917817
+Document ID: 5334 RSVd: 2.58791812436
+Document ID: 21393 RSVd: 2.58791812436”</strong></p>
+
+    <p><strong><em>My Result:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Test Queries in the Project Case03" src="/assets/project_imgs/probabilistic_search_engine/test_queries_from_ta_case03.png" width="35%" height="50%"></p>
+
+<h2 id="4-conclusion">4. Conclusion</h2>
+
+<p>As we can seen from above, BM25 improves upon TF*IDF.And it has its roots in probabilistic information retrieval. Probabilistic information retrieval is a fascinating field unto itself. Basically, it casts relevance as a probability problem. A relevance score, according to probabilistic information retrieval, ought to reflect the probability a user will consider the result relevant.</p>
+
+<p>As far as I can see, the <strong>BM25</strong> algorithm has one advantage:</p>
+
+<ol>
+  <li>BM25 is popular because of its efficiency. It can be seen as the state-of-the-art TF-IDF-like retrieval model.  It performs very well in many ad-hoc retrieval tasks</li>
+</ol>
+
+<p>It also has one big disadvantage:</p>
+
+<ol>
+  <li>It is full of hacks/heuristics. This fact makes it hard to extend this framework.</li>
+</ol>
+
+<h3 id="41-what-ive-learned">4.1 What I’ve Learned</h3>
+
+<p>I’ve deepened my understanding of probabilistic search methodology, BM25 algorithm and developed a greater appreciation for the technology and techniques behind probabilistic search. I’ve also improved my rusty Python skills and used them to find fast ways to calculate things like the intersection of two postings lists, list comprehensions, etc.</p>
+
+<p class="text-center">
+<a class="m-1 btn btn-outline-primary btn-2 " href="https://github.com/Lei-Xu/Probabilistic-Search-Engine">
+  Learn More
+</a>
+</p>
+
+</div>
+  </main>
+
+  <footer class="mt-auto py-3 text-center">
+
+  <small class="text-muted mb-2">
+    <i class="fas fa-code"></i> with <i class="fas fa-heart"></i>
+    by <strong>Lei Xu</strong>
+  </small>
+
+  <div class="container-fluid justify-content-center">
+<a class="social mx-1" href="mailto:ethanxu90@gmail.com" style="color: #6c757d" onmouseover="this.style.color='#db4437'" onmouseout="this.style.color='#6c757d'">
+      <i class="fas fa-envelope fa-1x"></i>
+    </a><a class="social mx-1" href="https://www.github.com/Lei-Xu" style="color: #6c757d" onmouseover="this.style.color='#333333'" onmouseout="this.style.color='#6c757d'">
+      <i class="fab fa-github fa-1x"></i>
+    </a><a class="social mx-1" href="https://www.linkedin.com/in/leix" style="color: #6c757d" onmouseover="this.style.color='#007bb5'" onmouseout="this.style.color='#6c757d'">
+      <i class="fab fa-linkedin-in fa-1x"></i>
+    </a>
+
+</div>
+
+</footer>
+  <!-- GitHub Buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- jQuery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- wow.js CDN & Activation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.js"></script>
+<script> new WOW().init(); </script>
+
+<!-- Initialize all tooltips -->
+<script>
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+
+</body>
+
+</html>

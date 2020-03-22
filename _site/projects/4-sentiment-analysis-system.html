@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+
+<html lang="en" class="h-100">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content=""Everyday, I turn ideas :collision: into code with Espresso Macchiato :coffee: , and never broke production."">
+
+  <title>< portfoLEI /></title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <!-- Animate CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css" type="text/css"/>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+
+  <!-- Mathjax -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  </script>
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+</head>
+
+
+<body class="d-flex flex-column h-100">
+
+  <main class="flex-shrink-0 container mt-5">
+  <nav class="navbar navbar-expand-lg navbar-light">
+
+  <a class="navbar-brand" href="/"><h5><b>&lt; portfoLEI /&gt;</b></h5></a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav ml-auto">
+<a class="nav-item nav-link active" href="/projects/">Projects</a>
+
+      <a class="nav-item nav-link " href="/blog/">Blog</a>
+
+      <a class="nav-item nav-link " href="/about/">About</a>
+
+      
+
+    </div>
+  </div>
+
+</nav>
+  <div class="col-lg-10 mx-auto mt-5 post">
+  <h1 id="sentiment-analysis-system">Sentiment Analysis System</h1>
+
+<p><img src="https://cdn.dribbble.com/users/1127192/screenshots/7070490/media/920ed3ee7afba03fc28a4b3b20b9c33c.png" alt="preview"></p>
+
+<h2 id="1-background">1. Background</h2>
+
+<p>In the project, We will do an experiment with web crawling,  infomation extracting and indexing to make document ranking reflect sentiment with the help of <strong>aFinn</strong> sentiment dictionary. And then We will do a comprehensive tests and analyze results.</p>
+
+<h2 id="2-introduction">2. Introduction</h2>
+
+<h3 id="21-information-crawling--extracting">2.1 Information Crawling &amp; Extracting</h3>
+
+<p>The first and important thing of the project is to generate source data for following operations, like indexing and query. The method we apply here is to crawl webpages and then extract useful information stored in text files.</p>
+
+<h4 id="211-web-crawlers---scrapy">2.1.1 Web Crawlers - <strong>Scrapy</strong>
+</h4>
+
+<p>Even though <strong>Scrapy</strong> was originally designed for web scraping, it can also be used to extract data using APIs (such as Amazon Associates Web Services) or as a general purpose web crawler, in a fast, simple, yet extensible way.</p>
+
+<blockquote>
+  <p><strong>Scrapy</strong> is an application framework for crawling web sites and extracting structured data which can be used for a wide range of useful applications, like data mining, information processing or historical archival.</p>
+</blockquote>
+
+<p>The following diagram shows an overview of the Scrapy architecture with its components and an outline of the data flow that takes place inside the system (shown by the red arrows). A brief description of the components is included below. The data flow is also described below.</p>
+
+<p><img alt="Scrapy Data Flow" src="/assets/project_imgs/sentiment_analysis_system/scrapy_dataflow.png" width="50%" height="50%"></p>
+
+<p>The data flow in Scrapy is controlled by the execution engine, and goes like this:</p>
+
+<ol>
+  <li>The Engine gets the initial Requests to crawl from the Spider.</li>
+  <li>The Engine schedules the Requests in the Scheduler and asks for the next Requests to crawl.</li>
+  <li>The Scheduler returns the next Requests to the Engine.</li>
+  <li>The Engine sends the Requests to the Downloader, passing through the Downloader Middlewares.</li>
+  <li>Once the page finishes downloading the Downloader generates a Response and sends it to the Engine, passing through the Downloader Middlewares.</li>
+  <li>The Engine receives the Response from the Downloader and sends it to the Spider for processing, passing through the Spider Middleware.</li>
+  <li>The Spider processes the Response and returns scraped items and new Requests to the Engine, passing through the Spider Middleware.</li>
+  <li>The Engine sends processed items to Item Pipelines, then send processed Requests to the Scheduler and asks for possible next Requests to crawl.</li>
+  <li>The process repeats (from step 1) until there are no more requests from the Scheduler.</li>
+</ol>
+
+<h4 id="212-text-extractor---beautiful-soup">2.1.2 Text Extractor - <strong>Beautiful Soup</strong>
+</h4>
+
+<p>Text extraction is the task of separating boilerplate such as comments, navigation bars, social media links, ads, etc, from the main body of text of an article formatted as HTML.</p>
+
+<p>In this part, we decide to introduce the <strong>Beautiful Soup 4</strong> framework into the project based on the three following features.</p>
+
+<blockquote>
+  <p><strong>Bautiful Soup</strong>, is a Python library for pulling data out of HTML and XML files. It works with your favorite parser to provide idiomatic ways of navigating, searching, and modifying the parse tree.</p>
+</blockquote>
+
+<ol>
+  <li>Beautiful Soup provides a few simple methods and Pythonic idioms for navigating, searching, and modifying a parse tree: a toolkit for dissecting a document and extracting what you need. It doesn’t take much code to write an application</li>
+  <li>Beautiful Soup automatically converts incoming documents to Unicode and outgoing documents to UTF-8. You don’t have to think about encodings, unless the document doesn’t specify an encoding and Beautiful Soup can’t detect one. Then you just have to specify the original encoding.</li>
+  <li>Beautiful Soup sits on top of popular Python parsers like lxml and html5lib, allowing you to try out different parsing strategies or trade speed for flexibility.</li>
+</ol>
+
+<h3 id="22-information-indexing">2.2 Information Indexing</h3>
+
+<h4 id="221-spimi-algorithm">2.2.1 <strong>SPIMI</strong> Algorithm</h4>
+
+<p>To implememnt rudimentary information retrieval, we will create an indexer using the <strong>SPIMI</strong> algorithm.</p>
+
+<blockquote>
+  <p><strong>SPIMI</strong> uses terms instead of termIDs, writes each block’s dictionary to disk, and then starts a new dictionary for the next block. SPIMI can index collections of any size as long as there is enough disk space available.</p>
+</blockquote>
+
+<p>The SPIMI algorithm pseudocode is shown below:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SPIMI-INVERT(token_stream)
+    output_file = NEWFILE()
+    dictionary = NEWHASH()
+    while (free memory available)
+    do token &lt;- next(tolen_steam)
+        if term(token) ∉ dictionary
+            then postings_list = ADDTODICTIONARY(dictionary, term(token))
+            else postings_list = GETPOSTINGSLIST(dictionary, term(token))
+        if full(postings_list)
+            then postings_list = DOUBLEPOSTINGSLIST(dictionary, term(token))
+        ADDTOPOSTINGSLIST(postings_list, doc_ID(token))
+    sorted_terms &lt;- SORTTERMS(dictionary)
+    WRITEBLOCKTODISK(sorted_terms, dictionary, output_file)
+    return output_file
+</code></pre></div></div>
+
+<p>The part of the algorithm that parses documents and turns them into a stream of term-docID pairs, which we call tokens here, has been omitted. SPIMI-INVERT is called repeatedly on the token stream until the entire collection has been processed.</p>
+
+<p>Tokens are processed one by one during each successive call of SPIMI-INVERT. When a term occurs for the first time, it is added to the dictionary (best implemented as a hash), and a new postings list is created.</p>
+
+<h4 id="222-natural-language-toolkit---nltk">2.2.2 Natural Language Toolkit - <strong>NLTK</strong>
+</h4>
+
+<p><strong>NLTK</strong> will be used to preprocess documents crawled by the scrapy, like tokenization, stemming and removing stopwords.</p>
+
+<blockquote>
+  <p><strong>NLTK</strong> is a leading platform for building Python programs to work with human language data. It provides easy-to-use interfaces to over 50 corpora and lexical resources such as WordNet, along with a suite of text processing libraries for classification, tokenization, stemming, tagging, parsing, and semantic reasoning, and wrappers for industrial-strength NLP libraries.</p>
+</blockquote>
+
+<h3 id="23-probabilistic-search-engine">2.3 Probabilistic Search Engine</h3>
+
+<h4 id="231-tf-idf-algorithm">2.3.1 <strong>TF-IDF</strong> Algorithm</h4>
+
+<p>To reflect how relevant a term is in a given document, we will appy the <strong>TF-IDF</strong> algorithm as a part of the scoring function in the project.</p>
+
+<blockquote>
+  <p><strong>TF-IDF</strong> is an information retrieval technique that weighs a term’s frequency <strong>(TF)</strong> and its inverse document frequency <strong>(IDF)</strong>. Each word or term has its respective TF and IDF score. The product of the TF and IDF scores of a term is called the TF*IDF weight of that term.</p>
+</blockquote>
+
+<p><strong>Put simply, the higher the TF-IDF score (weight), the rarer the term and vice versa.</strong></p>
+
+<p>The TF-IDF algorithm is used to weigh a keyword in any content and assign the importance to that keyword based on the number of times it appears in the document. More importantly, it checks how relevant the keyword is throughout the web, which is referred to as corpus.</p>
+
+<p>For a term $t$ in a document $d$, the weight $W_{t, d}$ of term $t$ in document $d$ is given by:</p>
+
+<p>$W_{t,d} = tf_{t, d} \times idf_{t}$</p>
+
+<p>We can see a few common components like $tf_{t, d}$ and $idf_{t}$. Here’s what each of these is all about:</p>
+
+<ol>
+  <li>
+    <p><strong>$tf_{t, d}$</strong> is the number of occurrences of $t$ in document $d$.</p>
+
+    <p>For example, when a 100 word document contains the term “sentiment” 12 times, the TF for the word ‘sentiment’ is</p>
+
+    <p>$tf_{sentiment} = 12/100 = 0.12$</p>
+
+    <p>But relevance does not increase proportionally with term frequency. We here decide to apply <strong>Log frequency weighting</strong> instead of raw frequency.</p>
+
+    <p>$(1 + \log tf_{t,d})$  if tf_{t, d} &gt; 0</p>
+  </li>
+  <li>
+    <p><strong>$idf_{t}$</strong> is a measure of the informativeness of the term $t$.</p>
+
+    <p>The IDF component of our formula measures how often a term occurs in all of the documents and “penalizes” terms that are common. The actual formula tf-idf uses for this part is:</p>
+
+    <p>$IDF(q_i) = \log[\frac{N}{df_t}]$</p>
+    <ul>
+      <li>
+<strong>N</strong> is the number of documents in the collection</li>
+      <li>
+<strong>$df_t$</strong> is the document frequency of the ith query term.</li>
+    </ul>
+  </li>
+</ol>
+
+<p>So, the final <strong>tf-idf</strong> formula that we will use in the project is:</p>
+
+<p>$W_{t,d} = (1 + \log tf_{t,d}) \times(\log {\frac{N} {df_t}})$</p>
+
+<p>With words having a high TF*IDF weight in our content, our content will always be among the top search results, so benifits that we have are:</p>
+
+<ol>
+  <li>Stop worrying about using the stop-words,</li>
+  <li>Successfully hunt words with higher search volumes and lower competition,</li>
+  <li>Be sure to have words that make our content unique and relevant to the user, etc.</li>
+</ol>
+
+<h4 id="232-sentiment-dictionary---afinn">2.3.2 Sentiment Dictionary - <strong>aFinn</strong>
+</h4>
+
+<p>To associate sentiment values to each term in our index, we will apply <strong>aFinn</strong>, specifically <strong>AFINN-111.txt</strong>, as the sentiment dictionary.</p>
+
+<blockquote>
+  <p><strong>AFINN</strong> is a list of English words rated for valence with an integer
+between minus five (negative) and plus five (positive). The words have
+been manually labeled by Finn Årup Nielsen in 2009-2011. The file
+is tab-separated.</p>
+</blockquote>
+
+<p>Word associated with sentiment score between <strong>$−5$ (most negative)</strong> and <strong>$+5$ (most positive)</strong>, like:</p>
+
+<ol>
+  <li>abandon  $-2$</li>
+  <li>abhor        $-3$</li>
+  <li>ability  $2$</li>
+  <li>aboard       $1$</li>
+</ol>
+
+<h4 id="233-sentiment-aggregation-function">2.3.3 Sentiment Aggregation Function</h4>
+
+<p>To associate sentiment to individual documents, we have to develop a simple sentiment aggregation function to calculate their sentiment values.</p>
+
+<p>Our idea is to take some text (e.g. document text, query text) as argument. It then splits all the text into lowercased words, and if some of the words appear in the AFINN-111.txt file, the associated values to the words are summed up to provide the sentiment score. Here is the code:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">sentiment_aggr_function</span><span class="p">(</span><span class="n">some_text</span><span class="p">):</span>
+    <span class="n">afinn</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s">"AFINN-111.txt"</span><span class="p">)]))</span>
+    <span class="n">sentiment_aggr</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">afinn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">some_text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="n">sentiment_aggr</span>
+
+</code></pre></div></div>
+
+<h4 id="234-ranking-function">2.3.4 Ranking Function</h4>
+
+<p>To rank retrieved documents, we have to develop a simple ranking function to sort them by a partial order on ($w,s$)</p>
+
+<p>Before formulating the partial order function, it is necessary to obtain the values of the arguments needed in the function (i.e. w and s). The approaches taken for obtaining these values are as follows:</p>
+
+<ol>
+  <li>
+    <p>$w$ is tf-idf based cosine distance to the query. The function for finding the cosine similarity between a query and document is</p>
+
+    <table>
+      <tbody>
+        <tr>
+          <td>$\cos(\vec{q}, \vec{p}) = SIM(\vec{q}, \vec{p}) = \frac{\vec{q}\times\vec{p}} {\left</td>
+          <td>\vec{q}\right</td>
+          <td>\left</td>
+          <td>\vec{p}\right</td>
+          <td>} = \frac{\sum_{i = 1}^{\left</td>
+          <td>V\right</td>
+          <td>}{q_i\times d_i}}{\sqrt{\sum_{i = 1}^{\left</td>
+          <td>V\right</td>
+          <td>}{q_i^2}} \sqrt{\sum_{i = 1}^{\left</td>
+          <td>V\right</td>
+          <td>}{d_i^2}}}$</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ol>
+      <li>$q_i$ represents the tf-idf weight of the term $i$ in the query.</li>
+      <li>$d_i$ represents the tf-idf weight of the term $i$ in the document.</li>
+    </ol>
+  </li>
+  <li>
+    <p>$s$ is a sentiment bias. As mentioned in the project instruction, the sentiment bias should obey the following principle:</p>
+  </li>
+  <li>If the query has <strong>overall positive</strong> sentiment, set $s_1 \leq s_2$ if $s_1$ is <strong>more positive</strong> than $s_2$.</li>
+  <li>If the query has <strong>overall negative</strong> sentiment, set $s_1 \leq s_2$ if $s_1$ is <strong>less positive</strong> than $s_2$</li>
+</ol>
+
+<p>The approach taken to make this principle apparent is to define $S$ as the difference   between the query sentiment $S_q$ and the document sentiment $S_d$ (i.e. $S = S_q - S_d$). This value $S$ will be used as the denominator in the partial order function which will be described below.</p>
+
+<p>After obtaining necessary arguments above, now we can define the partial order function below:</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>$f(w, s) = \frac{w}{\left</td>
+      <td>S\right</td>
+      <td>}$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Based on this function, a document with a superior weight and sentiment bias will be ranked higher than others. For this project, the emphasis is put on the sentiment bias. In other words, if a document $d_1$ has a slightly inferior weight than a document $d_2$, but the sentiment for  $d_1$ is significantly higher, then $d_1$ will be ranked higher than $d_2$. For instance, a query has a sentiment value of 10. If a document  $d_1$ with weight $3$ has a sentiment value of $5$ and document $d_2$ with weight $2$ has a sentiment value of $8$, by applying the partial order function:</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>$f_1(w_1, s_1) = \frac{2}{\left</td>
+      <td>8 - 10\right</td>
+      <td>} = \frac{2}{2} = 1$</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>$f_2(w_2, s_2) = \frac{3}{\left</td>
+      <td>5 - 10\right</td>
+      <td>} = \frac{3}{5} \leq 1$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>In this case, <strong>$d_1$ should be ranked higher than $d_2$</strong></p>
+
+<h2 id="3-design--implementation">3. Design &amp; Implementation</h2>
+
+<p>According to the description above, we will separate the program into three parts, and implement it in the following six steps:</p>
+
+<ol>
+  <li>
+    <p>Crawling Information</p>
+
+    <ol>
+      <li>Web Crawling</li>
+      <li>Infomation Extracting</li>
+    </ol>
+  </li>
+  <li>
+    <p>Creating Indexer</p>
+
+    <ol>
+      <li>Data Preprocessing</li>
+      <li>Indexing</li>
+      <li>Ranking</li>
+    </ol>
+  </li>
+  <li>
+    <p>Query</p>
+
+    <ol>
+      <li>Query and Rank retrieved documents</li>
+    </ol>
+  </li>
+</ol>
+
+<h3 id="31-web-crawling">3.1 Web Crawling</h3>
+
+<p>It is the module responsible for crawling webpages using <strong>Scrapy</strong> framwork.</p>
+
+<h4 id="311-creating-a-scrapy-project">3.1.1 Creating a scrapy project</h4>
+
+<p>First, create a scrapy project named <strong>crawler</strong> in the commmand line.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; scrapy startproject crawler
+</code></pre></div></div>
+<p>This will create a tutorial directory with the following contents:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>crawler/
+    scrapy.cfg            # deploy configuration file
+    crawler/              # project's Python module, I will import my code from here
+     __init__.py
+        items.py          # project items definition file
+        middlewares.py    # project middlewares file
+        pipelines.py      # project pipelines file
+        settings.py       # project settings file
+        spiders/          # a directory where I will later put my spiders
+            __init__.py
+</code></pre></div></div>
+
+<h4 id="312-customizing-scrapy-settings---settingspy">3.1.2 Customizing scrapy settings - <strong>settings.py</strong>
+</h4>
+
+<p>The Scrapy settings allows you to customize the behaviour of all Scrapy components, including the core, extensions, pipelines and spiders themselves.</p>
+
+<p>Here is how we customize my crawler (<strong>web_crawler/settings.py</strong>):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOT_NAME</span> <span class="o">=</span> <span class="s">'comp479project3'</span>
+
+<span class="n">SPIDER_MODULES</span> <span class="o">=</span> <span class="p">[</span><span class="s">'comp479project3.spiders'</span><span class="p">]</span>
+<span class="n">NEWSPIDER_MODULE</span> <span class="o">=</span> <span class="s">'comp479project3.spiders'</span>
+
+<span class="c1"># Obey robots.txt rules
+</span><span class="n">ROBOTSTXT_OBEY</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="c1"># Set to BFS
+</span><span class="n">DEPTH_PRIORITY</span> <span class="o">=</span> <span class="mi">1</span>
+</code></pre></div></div>
+
+<h4 id="313-define-the-spider---concordia_about_spiderpy">3.1.3 Define the spider - <strong>concordia_about_spider.py</strong>
+</h4>
+
+<p>Spiders are classes that you define and that Scrapy uses to scrape information from a website (or a group of websites). They must subclass <strong>scrapy.Spider</strong> and define the initial requests to make, optionally how to follow links in the pages, and how to parse the downloaded page content to extract data.</p>
+
+<p>This is the code for my Spider named <strong>about_crawl</strong> to crawl the <a href="https://www.concordia.ca/about.html">Concordia university about webpage</a>. Save it in a file named <strong>concordia_about_spider.py</strong> under the <strong>web_crawler/spiders</strong> directory in my project:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">scrapy</span>
+<span class="kn">from</span> <span class="nn">scrapy.exceptions</span> <span class="kn">import</span> <span class="n">CloseSpider</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="k">class</span> <span class="nc">ConcordiaAboutSpider</span><span class="p">(</span><span class="n">scrapy</span><span class="o">.</span><span class="n">Spider</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">'about_crawl'</span>
+    <span class="n">allowed_domains</span> <span class="o">=</span> <span class="p">[</span><span class="s">'concordia.ca'</span><span class="p">]</span>
+    <span class="n">start_urls</span> <span class="o">=</span> <span class="p">[</span><span class="s">'https://www.concordia.ca/about.html'</span><span class="p">]</span>
+    <span class="n">max_document_size</span> <span class="o">=</span> <span class="mi">200</span>  <span class="c1"># Number of links the crawler will extract
+</span>    <span class="n">document_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">document_counter</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_document_size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">document_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">),</span> <span class="s">'html.parser'</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extract_content</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">soup</span><span class="p">)</span>
+            <span class="n">links</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">'content-main'</span><span class="p">)</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">'a'</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="s">r'.*html$'</span><span class="p">))</span>  <span class="c1"># TODO improve regex
+</span>            <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">response</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'href'</span><span class="p">),</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CloseSpider</span><span class="p">(</span><span class="s">'max_document_exceeded'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="32-information-extracting">3.2 Information Extracting</h3>
+
+<p>This part is responsible for extracting all useful information from requests sent by the scrapy engine, coded in the <strong>about_crawl</strong> spider file <strong>(spiders/concordia_about_spider.py)</strong>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
+<span class="o">@</span><span class="nb">staticmethod</span>
+<span class="k">def</span> <span class="nf">extract_content</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">soup</span><span class="p">):</span>
+    <span class="n">sub_titles</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'/'</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s">'_'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_titles</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s">'p'</span><span class="p">,</span> <span class="s">'span'</span><span class="p">,</span> <span class="s">'h1'</span><span class="p">,</span> <span class="s">'h2'</span><span class="p">,</span> <span class="s">'h3'</span><span class="p">,</span> <span class="s">'h4'</span><span class="p">,</span> <span class="s">'h5'</span><span class="p">,</span> <span class="s">'h6'</span><span class="p">,</span> <span class="s">'li'</span><span class="p">,</span> <span class="s">'th'</span><span class="p">,</span> <span class="s">'td'</span><span class="p">]</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="s">''</span>
+    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">+=</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span> <span class="o">+</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">txt</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">txt</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">'content-main'</span><span class="p">)</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">tag</span><span class="p">)])</span>
+    <span class="n">ConcordiaAboutSpider</span><span class="o">.</span><span class="n">write_content_to_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="33-data-preprocessing">3.3 Data Preprocessing</h3>
+
+<p>In the preprocerssing phase (<strong>preprocessor.py</strong>), we will implement the <strong>Lossy Dictionary Compression</strong> techniques, known as <strong>Normalization</strong>, by removing numbers, blanks, punctuations etc. And then we will tokenize documents extracted by crawler for the next step - indexing.</p>
+
+<ol>
+  <li>
+    <p>Remove special characters, like punctuations, linefeed/carriage return and other non-alphanumeric characters.</p>
+
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> <span class="k">def</span> <span class="nf">remove_special_characters</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
+     <span class="s">'''Removes punctuations, linefeed/carriage return and other non-alphanumeric characters'''</span>
+     <span class="n">special_characters</span> <span class="o">=</span> <span class="s">'!?"#$</span><span class="si">%</span><span class="s">&amp;</span><span class="se">\'</span><span class="s">()*+,./:;&lt;=&gt;?@[</span><span class="se">\\</span><span class="s">]^_`{|}~'</span>
+     <span class="n">transtable</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s">''</span><span class="p">,</span> <span class="s">''</span><span class="p">,</span> <span class="n">special_characters</span><span class="p">)</span>
+     <span class="n">processed_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">term</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">transtable</span><span class="p">)</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">words</span><span class="p">]</span>  <span class="c1"># remove punctuations
+</span>     <span class="n">useless_words</span> <span class="o">=</span> <span class="p">[</span><span class="s">''</span><span class="p">,</span><span class="s">'s'</span><span class="p">,</span><span class="s">'-'</span><span class="p">,</span><span class="s">'--'</span><span class="p">]</span>
+     <span class="n">processed_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">term</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">processed_words</span> <span class="k">if</span> <span class="n">term</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">useless_words</span><span class="p">]</span>
+     <span class="k">return</span> <span class="n">processed_words</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Remove digits</p>
+
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> <span class="k">def</span> <span class="nf">remove_numbers</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
+     <span class="s">'''Remove numbers'''</span>
+     <span class="n">processed_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">term</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">term</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()]</span>
+     <span class="k">return</span> <span class="n">processed_words</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Case Folding</p>
+
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> <span class="k">def</span> <span class="nf">case_folding</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
+     <span class="s">'''Case Folding'''</span>
+     <span class="n">processed_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">words</span><span class="p">]</span>
+     <span class="k">return</span> <span class="n">processed_words</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Remove stopwords</p>
+
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> <span class="k">def</span> <span class="nf">remove_stopwords</span><span class="p">(</span><span class="n">stopwords</span><span class="p">,</span> <span class="n">words</span><span class="p">):</span>
+     <span class="s">'''Remove stopwords'''</span>
+     <span class="n">processed_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">term</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">stopwords</span><span class="p">]</span>
+     <span class="k">return</span> <span class="n">processed_words</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Stemming</p>
+
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> <span class="k">def</span> <span class="nf">stemming</span><span class="p">(</span><span class="n">terms</span><span class="p">):</span>
+     <span class="s">'''Stemming'''</span>
+     <span class="n">stemmer</span> <span class="o">=</span> <span class="n">PorterStemmer</span><span class="p">()</span>
+     <span class="n">stemmed_terms</span> <span class="o">=</span> <span class="p">[</span><span class="n">stemmer</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">term</span><span class="p">)</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">terms</span><span class="p">]</span>
+     <span class="k">return</span> <span class="n">stemmed_terms</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Tokenize</p>
+
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> <span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="n">file_list</span><span class="p">):</span>
+ <span class="n">token_id_pairs</span> <span class="o">=</span> <span class="p">[]</span>
+ <span class="k">for</span> <span class="n">file_index</span><span class="p">,</span> <span class="nb">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">file_list</span><span class="p">):</span>
+     <span class="k">print</span><span class="p">(</span><span class="s">'Processing '</span> <span class="o">+</span> <span class="n">file_list</span><span class="p">[</span><span class="n">file_index</span><span class="p">]</span> <span class="o">+</span> <span class="s">'...'</span><span class="p">)</span>
+     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_obj</span><span class="p">:</span>
+         <span class="n">data</span> <span class="o">=</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+         <span class="k">continue</span>
+     <span class="n">info</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+     <span class="n">newid</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s">'title'</span><span class="p">]</span>
+     <span class="n">body</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s">'content'</span><span class="p">]</span>
+     <span class="n">tokens</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+     <span class="c1"># Preprocess tokens, aka lazy compression
+</span>     <span class="n">tokens</span> <span class="o">=</span> <span class="n">remove_special_characters</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+     <span class="n">tokens</span> <span class="o">=</span> <span class="n">remove_numbers</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+     <span class="n">tokens</span> <span class="o">=</span> <span class="n">case_folding</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+     <span class="n">tokens</span> <span class="o">=</span> <span class="n">remove_stopwords</span><span class="p">(</span><span class="n">stop_words_30</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
+     <span class="n">tokens</span> <span class="o">=</span> <span class="n">stemming</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+     <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+         <span class="n">token_id_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">token</span><span class="p">,</span> <span class="n">newid</span><span class="p">))</span>
+     <span class="k">print</span><span class="p">(</span><span class="s">'Tokenization for '</span> <span class="o">+</span> <span class="n">file_list</span><span class="p">[</span><span class="n">file_index</span><span class="p">]</span> <span class="o">+</span> <span class="s">' completed...'</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="s">'Tokenization for all files completed...'</span><span class="p">)</span>
+ <span class="k">return</span> <span class="n">token_id_pairs</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="34-indexing---spimi">3.4 Indexing - <strong>SPIMI</strong>
+</h3>
+
+<p>After preprocessing the data, we will perform the SPIMI algorithm <strong>(spimi.py)</strong> to generate an index of the data crawled by the scrapy.</p>
+
+<p>To generate the final index file, the first thing  we have to is to:</p>
+
+<ol>
+  <li>Iterate terms to create their posting lists.</li>
+  <li>Merge block files.</li>
+  <li>Write them into the final index file.</li>
+</ol>
+
+<p><strong>1. Create posting lists</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">add_to_postings_list</span><span class="p">(</span><span class="n">postings_list</span><span class="p">,</span> <span class="n">newid</span><span class="p">,</span> <span class="n">term</span><span class="p">):</span>
+    <span class="s">"""
+    :param postings_list: specific postings_list from the disk
+    :param newid: id of the document
+    :param term: term from a token tuple
+    """</span>
+    <span class="n">sentiment_value</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">term_frequency</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">afinn</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s">"AFINN-111.txt"</span><span class="p">)]))</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">afinn</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">term</span><span class="p">:</span>
+            <span class="n">sentiment_value</span> <span class="o">=</span> <span class="n">afinn</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">break</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">postings_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">newid</span><span class="p">:</span>
+            <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="o">*</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">postings_list</span><span class="p">)))</span>
+            <span class="k">return</span>
+    <span class="n">document_frequency</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">postings_list</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">tf_idf_weight</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">term_frequency</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="n">document_frequency</span><span class="p">))</span>
+    <span class="n">postings_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">newid</span><span class="p">,</span> <span class="n">term_frequency</span><span class="p">,</span> <span class="n">sentiment_value</span><span class="p">,</span> <span class="n">tf_idf_weight</span><span class="p">])</span>
+    
+<span class="k">def</span> <span class="nf">spimi_invert</span><span class="p">(</span><span class="n">token_id_pairs</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s">'blocks'</span><span class="p">,</span> <span class="n">block_size</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+    <span class="n">block_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">disk</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">token_id_pairs</span><span class="p">):</span>
+        <span class="n">token_id_tuple</span> <span class="o">=</span> <span class="n">token_id_pairs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">token_id_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">disk</span><span class="p">:</span>
+            <span class="n">postings_list</span> <span class="o">=</span> <span class="n">add_to_dictionary</span><span class="p">(</span><span class="n">disk</span><span class="p">,</span> <span class="n">token_id_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">postings_list</span> <span class="o">=</span> <span class="n">get_postings_list</span><span class="p">(</span><span class="n">disk</span><span class="p">,</span> <span class="n">token_id_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">add_to_postings_list</span><span class="p">(</span><span class="n">postings_list</span><span class="p">,</span> <span class="n">token_id_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">token_id_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># check if the size of the current disk is reached to the limit or if reaching last token
+</span>        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">disk</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span> <span class="o">&gt;=</span> <span class="n">block_size</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">token_id_pairs</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'Sorting terms in '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s">'BLOCK'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">block_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span>
+            <span class="n">sorted_terms</span> <span class="o">=</span> <span class="n">sort_terms</span><span class="p">(</span><span class="n">disk</span><span class="p">)</span>
+            <span class="n">write_block_to_disk</span><span class="p">(</span><span class="n">sorted_terms</span><span class="p">,</span> <span class="n">disk</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="s">'BLOCK'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">block_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">path</span><span class="p">)</span>
+            <span class="n">disk</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">block_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+</code></pre></div></div>
+
+<p><strong>2. Merge &amp; Write into disk</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">merge_blocks</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s">'blocks'</span><span class="p">,</span> <span class="n">output_name</span><span class="o">=</span><span class="s">'FINAL_INDEX.txt'</span><span class="p">):</span>
+   <span class="o">...</span>
+    <span class="k">for</span> <span class="n">block_index</span><span class="p">,</span> <span class="n">block_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">block_files</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">'Started reading from '</span> <span class="o">+</span> <span class="n">block_files</span><span class="p">[</span><span class="n">block_index</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">'...'</span><span class="p">)</span>
+        <span class="n">current_line</span> <span class="o">=</span> <span class="n">block_files</span><span class="p">[</span><span class="n">block_index</span><span class="p">]</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="n">current_line_splited</span> <span class="o">=</span> <span class="n">current_line</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">posting_list</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">current_line_splited</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="n">current_line_dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="n">current_line_splited</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">posting_list</span><span class="p">}</span>
+        <span class="n">lines_holder</span><span class="p">[</span><span class="n">block_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_line_dictionary</span>
+        <span class="n">terms_holder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_line_splited</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">no_more_lines</span><span class="p">:</span>
+        <span class="n">current_term_to_write</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">terms_holder</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">posting_list_to_write</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">file_index</span> <span class="ow">in</span> <span class="n">lines_holder</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">current_term_to_write</span> <span class="ow">in</span> <span class="n">lines_holder</span><span class="p">[</span><span class="n">file_index</span><span class="p">]:</span>
+                <span class="n">occurrence_holder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_index</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">occurrence</span> <span class="ow">in</span> <span class="n">occurrence_holder</span><span class="p">:</span>
+            <span class="n">posting_list_to_write</span> <span class="o">+=</span> <span class="n">lines_holder</span><span class="p">[</span><span class="n">occurrence</span><span class="p">][</span><span class="n">current_term_to_write</span><span class="p">]</span>
+        <span class="n">final_index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">current_term_to_write</span><span class="p">)</span> <span class="o">+</span> <span class="s">': '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">posting_list_to_write</span><span class="p">)</span> <span class="o">+</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+        <span class="n">terms_holder</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">term</span><span class="p">:</span> <span class="n">term</span> <span class="o">!=</span> <span class="n">current_term_to_write</span><span class="p">,</span> <span class="n">terms_holder</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">occurrence</span> <span class="ow">in</span> <span class="n">occurrence_holder</span><span class="p">:</span>
+            <span class="n">current_line</span> <span class="o">=</span> <span class="n">block_files</span><span class="p">[</span><span class="n">occurrence</span><span class="p">]</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">current_line</span> <span class="o">==</span> <span class="s">''</span><span class="p">:</span>
+                <span class="n">current_line_splited</span> <span class="o">=</span> <span class="n">current_line</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">posting_list</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">current_line_splited</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">current_line_dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="n">current_line_splited</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">posting_list</span><span class="p">}</span>
+                <span class="n">lines_holder</span><span class="p">[</span><span class="n">occurrence</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_line_dictionary</span>
+                <span class="n">terms_holder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_line_splited</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">'All content from '</span> <span class="o">+</span> <span class="n">block_files</span><span class="p">[</span><span class="n">occurrence</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">' is merged into '</span> <span class="o">+</span> <span class="n">output_name</span> <span class="o">+</span> <span class="s">'...'</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">lines_holder</span><span class="p">[</span><span class="n">occurrence</span><span class="p">]</span>
+                <span class="k">del</span> <span class="n">block_files</span><span class="p">[</span><span class="n">occurrence</span><span class="p">]</span>
+        <span class="n">occurrence_holder</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">block_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines_holder</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'All block files are merged into '</span> <span class="o">+</span> <span class="n">output_name</span> <span class="o">+</span> <span class="s">'...'</span><span class="p">)</span>
+            <span class="n">no_more_lines</span> <span class="o">=</span> <span class="bp">True</span>
+</code></pre></div></div>
+
+<h3 id="35-ranking">3.5 Ranking</h3>
+
+<p>The partial order function is defined as</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>$f(w, s) = \frac{w}{\left</td>
+      <td>s\right</td>
+      <td>}$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>As discussed in section 2.3.4 Ranking function, the arguments <strong>w</strong> and <strong>s</strong> are obtained as follows:</p>
+
+<ol>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>$\cos(\vec{q}, \vec{p}) = SIM(\vec{q}, \vec{p}) = \frac{\vec{q}\times\vec{p}} {\left</td>
+          <td>\vec{q}\right</td>
+          <td>\left</td>
+          <td>\vec{p}\right</td>
+          <td>} = \frac{\sum_{i = 1}^{\left</td>
+          <td>V\right</td>
+          <td>}{q_i\times d_i}}{\sqrt{\sum_{i = 1}^{\left</td>
+          <td>V\right</td>
+          <td>}{q_i^2}} \sqrt{\sum_{i = 1}^{\left</td>
+          <td>V\right</td>
+          <td>}{d_i^2}}}$</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>$s = s_q - s_d$</li>
+</ol>
+
+<p>For the tf-idf cosine based argument, the <strong>function 1</strong> is divided into two portions, namely the <strong>numerator</strong> and the <strong>denominator</strong> portion.</p>
+
+<p>Here is code for the numerator portion (<strong>rank_document.py file</strong>).</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">q_d_sum_function</span><span class="p">(</span><span class="n">query_dictionary</span><span class="p">,</span> <span class="n">d_title</span><span class="p">):</span>
+    <span class="s">"""
+    :param query_dictionary: dictionary containing the terms of a query
+    :param d_title: title of a document
+    :return: the numerator of the cosine similarity function
+    """</span>
+    <span class="n">q_d_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">query_dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">q_d_sum</span> <span class="o">+=</span> <span class="n">query_dictionary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">get_document_tf_idf</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">d_title</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">q_d_sum</span>
+</code></pre></div></div>
+
+<p>Here is the code for the denominator portion (<strong>rank_document.py file</strong>).</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">q_d_square_sum_function</span><span class="p">(</span><span class="n">query_dictionary</span><span class="p">,</span> <span class="n">d_body</span><span class="p">,</span> <span class="n">d_title</span><span class="p">):</span>
+    <span class="s">"""
+    :param query_dictionary: dictionary containing the terms of a query
+    :param d_body: body content of a document
+    :param d_title: title of a document
+    :return: the denominator of the cosine similarity function
+    """</span>
+    <span class="n">q_square_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">d_square_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">query_dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">q_square_sum</span> <span class="o">+=</span> <span class="n">query_dictionary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">query_dictionary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">d_term</span> <span class="ow">in</span> <span class="n">nltk</span><span class="o">.</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">d_body</span><span class="p">):</span>
+        <span class="n">d_square_sum</span> <span class="o">+=</span> <span class="n">get_document_tf_idf</span><span class="p">(</span><span class="n">d_term</span><span class="p">,</span> <span class="n">d_title</span><span class="p">)</span><span class="o">*</span><span class="n">get_document_tf_idf</span><span class="p">(</span><span class="n">d_term</span><span class="p">,</span> <span class="n">d_title</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q_square_sum</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d_square_sum</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>The overall cosine similarity function is given below (<strong>rank_document.py file</strong>):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">cosine_similarity</span><span class="p">(</span><span class="n">query_dictionary</span><span class="p">,</span> <span class="n">d_body</span><span class="p">,</span> <span class="n">d_title</span><span class="p">):</span>
+    <span class="s">"""
+    :param query_dictionary: dictionary containing the terms of a query
+    :param d_body: body content of a document
+    :param d_title: title of a document
+    :return: the cosine similarity measure
+    """</span>
+    <span class="k">return</span> <span class="n">q_d_sum_function</span><span class="p">(</span><span class="n">query_dictionary</span><span class="p">,</span> <span class="n">d_title</span><span class="p">)</span> <span class="o">/</span> <span class="n">q_d_square_sum_function</span><span class="p">(</span><span class="n">query_dictionary</span><span class="p">,</span> <span class="n">d_body</span><span class="p">,</span> <span class="n">d_title</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="36-query--rank-retrieved-documents">3.6 Query &amp; Rank retrieved documents</h3>
+
+<p>The part <strong>(rank_document.py)</strong> mainly focuses on ranking retrieved documents by a partial order discussed above.</p>
+
+<p>Firstly, the program asks the user for a query:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">query</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">'Please enter a query: '</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Secondly, the query is then splitted into tokens and stored in a dictionary (hashmap) which consists of a query token (i.e. query term) and the query token’s tf-idf tuple.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">find_q_tf_idf</span><span class="p">(</span><span class="n">term</span><span class="p">,</span> <span class="n">term_frequency</span><span class="p">):</span>
+    <span class="s">"""
+    :param term: a term in the query
+    :param term_frequency: the frequency of the term in the query
+    :return: the tf-idf of the term
+    """</span>
+    <span class="k">if</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">final_index_dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">term_frequency</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">N</span> <span class="o">/</span> <span class="p">((</span><span class="n">final_index_dictionary</span><span class="p">[</span><span class="n">term</span><span class="p">]</span><span class="o">.</span><span class="n">__len__</span><span class="p">())</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="mf">0.0</span>
+</code></pre></div></div>
+<p>Thirdly, after collecting all the pieces required for generating the w and s arguments (i.e. query tf-idf, document tf-idf, query sentiment value, and document sentiment value), we will do the ranking of the retrieved documents.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ranked_document_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">'RANKED_DOCUMENT_Q1.txt'</span><span class="p">,</span> <span class="s">'w+'</span><span class="p">)</span>
+    <span class="n">sorted_by_value</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">document_w_s_weight</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">kv</span><span class="p">:</span> <span class="n">kv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">rank_number</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ranked_document_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"Query: "</span> <span class="o">+</span> <span class="n">query</span> <span class="o">+</span> <span class="s">"</span><span class="se">\n\n</span><span class="s">"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">elements</span> <span class="ow">in</span> <span class="n">sorted_by_value</span><span class="p">:</span>
+        <span class="n">rank_number</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">ranked_document_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"Rank: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank_number</span><span class="p">)</span> <span class="o">+</span> <span class="s">" url: "</span> <span class="o">+</span> <span class="n">document_url_dictionary</span><span class="p">[</span><span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="s">" document title: "</span> <span class="o">+</span> <span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">" score: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">elements</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Finally, a text file is generated with the contents being a list of documents sorted by their respective weight obtained through the partial order function.</p>
+
+<h2 id="4-analysis--test">4. Analysis &amp; Test</h2>
+
+<p>We are planning to test our program from three main parts:</p>
+
+<ol>
+  <li>Crawling</li>
+  <li>Indexing</li>
+  <li>Ranking</li>
+</ol>
+
+<h3 id="41-crawling-test">4.1 Crawling Test</h3>
+
+<ol>
+  <li>
+    <p><strong>Case 1</strong></p>
+
+    <p><strong><em>Purpose:</em></strong></p>
+
+    <p>Check whether the spider can crawle <strong>correct pages</strong> and download the <strong>correct total number of files</strong> into the <strong>right directory</strong> we set, which is <strong><em>extracted_files</em></strong></p>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>scrapy crawl about_crawl</strong> command.</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Results:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Crawling Case01 - Console" src="/assets/project_imgs/sentiment_analysis_system/crawling_case01_console.png" width="40%" height="50%">
+<img alt="Crawling Case01 - Docs" src="/assets/project_imgs/sentiment_analysis_system/crawling_case01_docs.png" width="50%" height="50%"></p>
+
+<h3 id="42-indexing-test">4.2 Indexing Test</h3>
+
+<ol>
+  <li>
+    <p><strong>Case 1</strong></p>
+
+    <p><strong><em>Purpose:</em></strong></p>
+
+    <p>Check whether the <strong>SPIMI</strong> algorithm works through the following two parts</p>
+
+    <ol>
+      <li>Block fils</li>
+      <li>Final index file.</li>
+    </ol>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>python3 spimi.py</strong> command.</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Note:</em></strong></p>
+
+    <p>(<strong>How big is the index?</strong>)</p>
+
+    <p>The size of the final index is <strong>4.6 MB</strong></p>
+
+    <p>(<strong>How did you define what constitutes a document in our index?</strong>)</p>
+
+    <p>The structure of item in the final index is {term : [ [doc_title, tf, sentiment_value, tf_idf_weight], [posting#2], [posting#3],…]}</p>
+
+    <p><strong><em>Results:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Indexing Case01 - Console" src="/assets/project_imgs/sentiment_analysis_system/indexing_case01_console01.png" width="26%" height="50%">
+<img alt="Indexing Case01 - Console" src="/assets/project_imgs/sentiment_analysis_system/indexing_case01_console02.png" width="27%" height="50%"></p>
+<p style="font-size:10px;font-color:#969696">Figure 4.2 Indexing Testing Result - Console </p>
+<p>&lt;/div&gt;</p>
+
+<p><img alt="Index Case01 - Docs" src="/assets/project_imgs/sentiment_analysis_system/indexing_case01_docs01.png" width="40%" height="50%">
+<img alt="Index Case01 - Docs" src="/assets/project_imgs/sentiment_analysis_system/indexing_case01_docs02.png" width="40%" height="50%"></p>
+
+<h3 id="43-ranking-test">4.3 Ranking Test</h3>
+
+<h4 id="431-scenario-01---multiple-keyword-query">4.3.1 Scenario 01 - <strong>Multiple Keyword Query</strong>
+</h4>
+
+<ol>
+  <li>
+    <p><strong>Case 1</strong></p>
+
+    <p><strong><em>Purpose:</em></strong></p>
+
+    <p>Check whether the program can return the correct result when doing a single keyword (<strong>Positive</strong>) query.</p>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>python3 rank_document.py</strong> command.</li>
+      <li>Enter positive keywords, like <strong>amazing creativity powers</strong>
+</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Results:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Positive Query Case01 Console" src="/assets/project_imgs/sentiment_analysis_system/positive_query_case01_console.png" width="50%" height="50%">
+<img alt="Positive Query Case01 Docs" src="/assets/project_imgs/sentiment_analysis_system/positive_query_case01_docs.png" width="50%" height="50%"></p>
+
+<ol>
+  <li>
+    <p><strong>Case 2</strong></p>
+
+    <p><strong><em>Purpose:</em></strong></p>
+
+    <p>Check whether the program can return the correct result when doing a single keyword (<strong>Neutral</strong>) query.</p>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>python3 rank_document.py</strong> command.</li>
+      <li>Enter neutral keywords, like <strong>creativity powers</strong>
+</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Results:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Neutral Query Case01 Console" src="/assets/project_imgs/sentiment_analysis_system/neutral_query_case01_console.png" width="50%" height="50%">
+<img alt="Positive Query Case01 Docs" src="/assets/project_imgs/sentiment_analysis_system/neutral_query_case01_docs.png" width="50%" height="50%"></p>
+
+<ol>
+  <li>
+    <p><strong>Case 3</strong></p>
+
+    <p><strong><em>Purpose:</em></strong></p>
+
+    <p>Check whether the program can return the correct result when doing a single keyword (<strong>Negative</strong>) query.</p>
+
+    <p><strong><em>Steps:</em></strong></p>
+
+    <ol>
+      <li>Open a termianl and go to the project directory.</li>
+      <li>Run the <strong>python3 rank_document.py</strong> command.</li>
+      <li>Enter negative keywords, like <strong>disappointing creativity powers</strong>
+</li>
+      <li>Check the result.</li>
+    </ol>
+
+    <p><strong><em>Results:</em></strong></p>
+  </li>
+</ol>
+
+<p><img alt="Negative Query Case01 Console" src="/assets/project_imgs/sentiment_analysis_system/negative_query_case01_console.png" width="50%" height="50%">
+<img alt="Positive Query Case01 Docs" src="/assets/project_imgs/sentiment_analysis_system/negative_query_case01_docs.png" width="50%" height="50%"></p>
+
+<p class="text-center">
+<a class="m-1 btn btn-outline-primary btn-2 " href="https://github.com/Lei-Xu/Sentiment-Analysis-System">
+  Learn More
+</a>
+</p>
+
+</div>
+  </main>
+
+  <footer class="mt-auto py-3 text-center">
+
+  <small class="text-muted mb-2">
+    <i class="fas fa-code"></i> with <i class="fas fa-heart"></i>
+    by <strong>Lei Xu</strong>
+  </small>
+
+  <div class="container-fluid justify-content-center">
+<a class="social mx-1" href="mailto:ethanxu90@gmail.com" style="color: #6c757d" onmouseover="this.style.color='#db4437'" onmouseout="this.style.color='#6c757d'">
+      <i class="fas fa-envelope fa-1x"></i>
+    </a><a class="social mx-1" href="https://www.github.com/Lei-Xu" style="color: #6c757d" onmouseover="this.style.color='#333333'" onmouseout="this.style.color='#6c757d'">
+      <i class="fab fa-github fa-1x"></i>
+    </a><a class="social mx-1" href="https://www.linkedin.com/in/leix" style="color: #6c757d" onmouseover="this.style.color='#007bb5'" onmouseout="this.style.color='#6c757d'">
+      <i class="fab fa-linkedin-in fa-1x"></i>
+    </a>
+
+</div>
+
+</footer>
+  <!-- GitHub Buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- jQuery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- wow.js CDN & Activation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.js"></script>
+<script> new WOW().init(); </script>
+
+<!-- Initialize all tooltips -->
+<script>
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+- title: Data Science & Software Engineer - Machine Learning Platform, BrainFinance, Montreal, Canada
+  from: Jan. 2020
+  to: Present
+  description:
+    - Build a robust ML-as-a-service platform (PanGu ML - 1st Stage) from scratch, covering the end-to-end workflow, seamlessly managing data, training, evaluating, deploying models to production serving containers at its scale, based on three tiers (Open Infrastructure Foundation/Model Factory/Management Control Center).
+    - Apply the state-of-the-art machine learning algorithms, techniques, architectures and ideas from research papers and tech blogs into the PanGu ML of BrainFinance.
+    - I live and breathe AI here every day.
+    - Python • Flask • Numpy • Pandas • scikit-learn • TensorFlow • Plotly • AntV G6 • pytest • React • MySQL • Redis • Cassandra • JanusGraph • Spark • Airflow • GCP • Docker • Jupyter • ETL Data Pipelines • Miniconda • Database Partitioning and Sharding • RESTful API development • Data Visualization • Serverless • Microservices
+
+- title: Data Science Intern, BrainFinance, Montreal, Canada
+  from: Sept. 2019
+  to: Jan. 2020
+  description: 
+    - Work on data retrieval, warehousing, processing, validation, predictive modeling and analysis.
+    - Design, build and maintain complex ETL jobs to process high volumes of raw data and form cleaned, modelled datasets.
+    - Build and train financial forecast and fraud models to analyze and evaluate customers’ financial health in real-time.
+    - Facilitate improved forecast performance and decision making.
+    - I live and breathe AI here every day.
+    - Python • Numpy • Pandas • scikit-learn • TensorFlow • JanusGraph • Spark • Airflow • GCP • Docker • Jupyter • ETL Data Pipelines • Miniconda • Data Visualization
+
+- title: Senior Software Engineer, OriginLab, Guangzhou, China
+  from: Jun. 2013
+  to: Jul. 2017
+  description: 
+    - Developed a cloud-based automated test platform (OATS) for easy management and collaboration, parallel and distributed execution, which can increase the speed of execution and easy-using dramatically.
+    - Enhanced the platform to support run monitoring, log processing and report analytics features.
+    - Created integrations with various clouds, testing frameworks and languages through log events.
+    - Developed tracking, monitoring and analytics oriented dashboards and other detection tools.
+    - Developed a retrieval web application (subsystem of OATS) to archive and search Origin reports/logs effectively using Ruby and Rails framework.
+    - Defined rules to identify test requirements and created automated test flows, a series of pipelines written by groovy.
+    - Developed Origin cases and modular scripts using C# and Python.
+    - Developed a native application “Origin Central” built in Origin (Desktop version) using web technologies.
+    - Python • C# • Ruby • Rails • Groovy • HTML/CSS/Javascript • SASS • BEM • MongoDB • Docker • vSphere • Jenkins

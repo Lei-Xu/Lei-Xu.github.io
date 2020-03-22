@@ -1,0 +1,27 @@
+- name: Numpy
+  percentage: 90
+  color: primary
+
+- name: Pandas
+  percentage: 90
+  color: primary
+
+- name: Scikit-learn
+  percentage: 75
+  color: info
+
+- name: Plotly
+  percentage: 90
+  color: primary
+
+- name: Scrapy
+  percentage: 75
+  color: info
+
+- name: Pytest
+  percentage: 75
+  color: info
+
+- name: GraphQL
+  percentage: 65
+  color: dark
