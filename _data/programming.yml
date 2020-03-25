@@ -25,3 +25,7 @@
 - name: React
   percentage: 40
   color: danger
+
+- name: C++
+  percentage: 40
+  color: danger

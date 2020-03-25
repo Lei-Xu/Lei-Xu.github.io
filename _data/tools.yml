@@ -25,3 +25,7 @@
 - name: GraphQL
   percentage: 65
   color: dark
+
+- name: TensorFlow
+  percentage: 40
+  color: danger
