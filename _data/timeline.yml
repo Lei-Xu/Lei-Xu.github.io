@@ -3,6 +3,7 @@
   to: Present
   description:
     - Design, build and maintain complex ETL jobs to process high volumes of raw data and form cleaned, modelled datasets.
+    - Develop an Associate model to analyze how certain customers are related to each other.
     - Build a robust ML-as-a-service platform (PanGu ML - 1st Stage) from scratch, covering the end-to-end workflow, seamlessly managing data, training, evaluating, deploying models to production serving containers at its scale, based on three tiers (Open Infrastructure Foundation/Model Factory/Management Control Center).
     - Apply the state-of-the-art machine learning algorithms, techniques, architectures and ideas from research papers and tech blogs into the PanGu ML of BrainFinance.
     - I live and breathe AI here every day.
