@@ -1,5 +1,5 @@
 ---
-title: How to Design a RESTful API with Flask
+title: How to Design a RESTful API with Flask Part 1
 tags: [How to Design a RESTful API, RESTful API, Flask, Python]
 style: fill
 color: secondary
