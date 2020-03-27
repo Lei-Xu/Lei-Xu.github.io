@@ -17,8 +17,8 @@ By the way, the solution to solve the cold start problem is to ask users to sele
 
 ## Better Understanding of Convolutional Neural Networks for NLP
 
-1. [Convolutional Neural Networks for Sentence Classification]{https://www.aclweb.org/anthology/D14-1181.pdf}
-2. [Understanding Convolutional Neural Networks for NLP]{http://www.wildml.com/2015/11/understanding-convolutional-neural-networks-for-nlp/}
+1. [Convolutional Neural Networks for Sentence Classification](https://www.aclweb.org/anthology/D14-1181.pdf)
+2. [Understanding Convolutional Neural Networks for NLP](http://www.wildml.com/2015/11/understanding-convolutional-neural-networks-for-nlp/)
 
 ## Architecture
 
