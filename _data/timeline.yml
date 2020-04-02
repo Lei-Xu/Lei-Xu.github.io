@@ -32,6 +32,6 @@
     - Developed tracking, monitoring and analytics oriented dashboards and other detection tools.
     - Developed a retrieval web application (subsystem of OATS) to archive and search Origin reports/logs effectively using Ruby and Rails framework.
     - Defined rules to identify test requirements and created automated test flows, a series of pipelines written by groovy.
-    - Developed Origin cases and modular scripts using C# and Python.
+    - Developed Origin cases and modular scripts.
     - Developed a native application “Origin Central” built in Origin (Desktop version) using web technologies.
-    - Python • C# • Ruby • Rails • Groovy • HTML/CSS/Javascript • SASS • BEM • MongoDB • Docker • vSphere • Jenkins
+    - Python • C# • C++ • Ruby • Rails • Groovy • HTML/CSS/Javascript • SASS • BEM • MongoDB • Docker • vSphere • Jenkins
