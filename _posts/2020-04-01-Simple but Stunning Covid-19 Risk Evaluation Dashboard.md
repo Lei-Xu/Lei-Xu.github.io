@@ -6,6 +6,5 @@ color: danger
 description: I would like to share how I quick design a simple yet stunning Covid-19 risk evaluation dashboard.
 ---
 
-# How to Develop Simple but Stunning Covid-19 Risk Evaluation Dashboard
 
 ## 1. Project Structure 

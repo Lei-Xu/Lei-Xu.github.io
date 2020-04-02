@@ -1,12 +1,11 @@
 ---
-title: How to Design a RESTful API with Flask - Part 1
+title: How to Design a RESTful API with Flask - Part 1 Introduction
 tags: [How to Design a RESTful API, RESTful API, Flask, Python]
 style: fill
 color: secondary
 description: In the series, I will talk about how I design and develop RESTful APIs with Flask, which is a part of my first project at [BrainFinance](https://icash.ca).
 ---
 
-# How to Design a RESTful API with Flask Part 1 - Introduction
 
 ## 1. RESTful API 
 
