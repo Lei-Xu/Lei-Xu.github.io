@@ -1,16 +1,17 @@
 - title: Software Engineer - Machine Learning Platform, BrainFinance, Montreal, Canada
   from: Jan. 2020
-  to: Present
+  to: Apr. 2020
   description:
     - Design, build and maintain complex ETL jobs to process high volumes of raw data and form cleaned, modelled datasets.
     - Develop an Associate model to analyze how certain customers are related to each other.
     - Build a robust ML-as-a-service platform (PanGu ML - 1st Stage) from scratch, covering the end-to-end workflow, seamlessly managing data, training, evaluating, deploying models to production serving containers at its scale, based on three tiers (Open Infrastructure Foundation/Model Factory/Management Control Center).
     - Apply the state-of-the-art machine learning algorithms, techniques, architectures and ideas from research papers and tech blogs into the PanGu ML of BrainFinance.
     - Design and Develop (Urgently) a Covid-19 Risk Evaluation System based on clients’ credit score, payroll, profile, industry etc. and provincial/federal financial aid as well, to provide super low-cost quick online loans to those who got laid off to go through the tough time together with us.
+    - Design and develop a universal machine learning models’ serving engine in pre-production.
     - Develop the first architecture design and data guidelines book in the company to standardize system design and data quality; then help generalize the process into scalable platform.
     - Design and develop an universal machine learning models serving engine in pre-production.
     - I live and breathe AI here every day.
-    - Python • Flask • Numpy • Pandas • scikit-learn • TensorFlow • Plotly • AntV G6 • pytest • React • GraphQL • MySQL • Redis • Cassandra • JanusGraph • Spark • Airflow • GCP • Docker • Jupyter • ETL Data Pipelines • Miniconda • Database Partitioning and Sharding • RESTful API development • Data Visualization • Design Patterns • Microservices
+    - Python • Flask • Numpy • Pandas • scikit-learn • TensorFlow • Plotly • AntV G6 • pytest • React • GraphQL • MySQL • Redis • Cassandra • JanusGraph • Spark • Airflow • GCP • Docker • Jupyter • ETL Data Pipelines • Miniconda • Database Partitioning and Sharding • RESTful API development • Data Visualization • Design Patterns • System Design • Serverless • Microservices
 
 - title: Data Science, BrainFinance, Montreal, Canada
   from: Oct. 2019

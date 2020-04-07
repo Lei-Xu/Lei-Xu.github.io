@@ -27,5 +27,5 @@
   color: dark
 
 - name: TensorFlow
-  percentage: 40
+  percentage: 70
   color: danger
