@@ -6,6 +6,10 @@
   percentage: 80
   color: success
 
+- name: Go
+  percentage: 70
+  color: info
+
 - name: Ruby
   percentage: 60
   color: dark
@@ -24,8 +28,4 @@
 
 - name: React
   percentage: 40
-  color: danger
-
-- name: C++
-  percentage: 50
   color: danger
